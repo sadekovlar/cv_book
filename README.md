@@ -1,1 +1,1 @@
-# Материалы к курсу по "Computer vision applications in self-driving cars" для магистров и бакалавров
+# Материалы к курсу "Computer vision applications in self-driving cars" 
