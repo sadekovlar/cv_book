@@ -6,5 +6,6 @@
 - Модуль IV посвящен вопро 
 
 
-### requirements
+### Требования
+python 3.9
 opencv 3.4.9
