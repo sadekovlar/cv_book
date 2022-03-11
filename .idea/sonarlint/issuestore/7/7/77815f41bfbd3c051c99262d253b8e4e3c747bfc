@@ -1,0 +1,3 @@
+
+zpython:S5717"]Change this default value to "None" and initialize this parameter inside the function/method.(Ìô¬åÿÿÿÿÿ
+ppython:S5886"SReturn a value of type "str" instead of "dict" or update function "read" type hint.(Õù­õýÿÿÿÿ
