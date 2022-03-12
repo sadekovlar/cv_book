@@ -4,3 +4,4 @@ pyrightconfig.json
 .vscode
 .vimspector.json
 **.ipynb_checkpoints
+test_upload_img.py
