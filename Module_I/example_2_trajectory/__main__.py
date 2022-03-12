@@ -1,7 +1,7 @@
 import cv2
 
 from Module_I.load_calib import CalibReader
-from Module_I.example_4_trajectory.trajectory_estimator import TrajectoryEstimator
+from Module_I.example_2_trajectory.trajectory_estimator import TrajectoryEstimator
 
 
 if __name__ == '__main__':

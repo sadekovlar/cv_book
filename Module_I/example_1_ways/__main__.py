@@ -1,7 +1,7 @@
 import cv2
 
 from Module_I.load_calib import CalibReader
-from Module_I.example_3_ways.way_estimator import WayEstimator
+from Module_I.example_1_ways.way_estimator import WayEstimator
 
 
 if __name__ == '__main__':
