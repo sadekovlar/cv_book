@@ -46,4 +46,3 @@ if __name__ == '__main__':
     s.initialize(**init_args)
     s.run()
     print("Done!")
-

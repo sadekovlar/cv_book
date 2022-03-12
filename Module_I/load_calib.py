@@ -24,5 +24,3 @@ if __name__ == "__main__":
     calib = CalibReader(file_name = '../data/tram/leftImage.yml', param = par)
     matrix = calib.read()
     print(matrix)
-
-    
