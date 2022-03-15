@@ -2,6 +2,11 @@ import numpy as np
 
 
 class Calib:
+    """
+    Параметры из файла yaml.
+
+    K - интринсики, D - дисторсия, r - поворот, t - смещение.
+    """
     def __init__(self, calib_dict):
         self.cam_to_vr = np.array([
             [1, 0, 0],
@@ -10,8 +15,8 @@ class Calib:
         ])
         self.K = calib_dict['K']
         self.D = calib_dict['D']
-        yaw, pitch, roll = calib_dict['r']
-        self.r = self.rotation_matrix_from([yaw, pitch, roll]).T
+        roll, pitch, yaw = calib_dict['r']
+        self.r = self.rotation_matrix_from([roll, pitch, yaw]).T
         self.t = calib_dict['t']
 
     @staticmethod

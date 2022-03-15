@@ -1,10 +1,16 @@
 import numpy as np
 
-from .point import Point3d
 from .calib import Calib
+from .point import Point3d
 
 
 class Camera:
+    """
+    Класс для перехода из трёхмерной в двумерную систему координат.
+
+    Перевод осуществляется на основе калиба,
+    подающегося при инициализации как входной аргумент.
+    """
     EPS = 1e-3
 
     def __init__(self, calib: Calib):

@@ -1,16 +1,17 @@
 import cv2
 
+from Module_I.load_calib import CalibReader
+from Module_I.way_estimator import WayEstimator
 from season_reader import SeasonReader
 
-from Module_I.example_1_ways.way_estimator import WayEstimator
-from Module_I.load_calib import CalibReader
 
-
-class ReaderForWays(SeasonReader):
+class Reader(SeasonReader):
+    """Обработка видеопотока."""
     def on_init(self):
         par = ['K', 'D', 'r', 't']
-        calib_reader = CalibReader(
-            file_name=r'../../data/tram/leftImage.yml',
+        calib_reader = CalibReader()
+        calib_reader.initialize(
+            file_name=r'../data/tram/leftImage.yml',
             param=par)
         calib_dict = calib_reader.read()
 
@@ -24,6 +25,7 @@ class ReaderForWays(SeasonReader):
         cv2.putText(self.frame, f'GrabMsec: {self.frame_grab_msec}', (15, 50),
                     cv2.FONT_HERSHEY_PLAIN, 1.0, (0, 255, 0), 2)
         self.way_estimator.dray_way(self.frame)
+        self.way_estimator.draw_coordinate_system(self.frame)
 
         return True
 
@@ -38,11 +40,10 @@ class ReaderForWays(SeasonReader):
 
 
 if __name__ == '__main__':
-
     init_args = {
-        'path_to_data_root': '../../data/tram/'
+        'path_to_data_root': '../data/tram/'
     }
-    s = ReaderForWays()
+    s = Reader()
     s.initialize(**init_args)
     s.run()
-    print("Done!")
+    print('Done!')
