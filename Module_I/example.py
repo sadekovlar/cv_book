@@ -25,7 +25,6 @@ class Reader(SeasonReader):
         cv2.putText(self.frame, f'GrabMsec: {self.frame_grab_msec}', (15, 50),
                     cv2.FONT_HERSHEY_PLAIN, 1.0, (0, 255, 0), 2)
         self.way_estimator.dray_way(self.frame)
-        self.way_estimator.draw_coordinate_system(self.frame)
 
         return True
 
