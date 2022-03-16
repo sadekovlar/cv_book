@@ -1,5 +1,5 @@
 import cv2
-from typing import Optional, List
+
 
 class CalibReader:
     _file_name: str = 'leftImage.yaml'
@@ -7,7 +7,6 @@ class CalibReader:
     def initialize(self, file_name: str = '', param = list()) -> bool:
         self._file_name = file_name
         self._param = param
-        return True
 
     def read(self) -> str:
         file_name = self._file_name
@@ -22,9 +21,6 @@ class CalibReader:
 
 if __name__ == "__main__":
     par = ["K", "D", "r", "t" ]
-    calib = CalibReader()
-    calib.initialize(file_name = '../data/tram/leftImage.yml', param = par)
+    calib = CalibReader(file_name = '../data/tram/leftImage.yml', param = par)
     matrix = calib.read()
     print(matrix)
-
-    
