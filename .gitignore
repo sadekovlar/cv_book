@@ -3,4 +3,5 @@ pyrightconfig.json
 .nvimrc
 .vscode
 .vimspector.json
+.idea
 **.ipynb_checkpoints
