@@ -1,5 +1,4 @@
 from math import pi
-from math import sin, cos
 import cv2
 import numpy as np
 from load_calib import CalibReader
@@ -40,7 +39,8 @@ class Reader(SeasonReader):
         calib_dict = calib_reader.read()
 
         self.way_analyzer = WayAnalyzer(calib_dict)
-        self.cube = Object3D( vector(0,18,0.8), vector(0,0,0), Object3D.OBJ_CUBE, 1.6, 1.6, 1.6)
+        self.parall = Object3D( vector(0,18,0), vector(0,0,0), Object3D.OBJ_PARALL, 4, 0.4, 1.6)
+        self.cube = Object3D( vector(0,18,1), vector(0,0,0), Object3D.OBJ_PARALL, 1.6, 1.6, 1.6)
         self.misis = Object3D( vector(0,8,0), vector(0,0,0), Object3D.OBJ_MISiS, 2, 1.8, 0)
         return True
 
@@ -48,6 +48,7 @@ class Reader(SeasonReader):
         return True
 
     def on_frame(self): # События, применяемые к КАЖДОМУ кадру
+        self.way_analyzer.draw_figure(self.frame, self.parall)
         self.way_analyzer.draw_figure(self.frame, self.cube)
         self.way_analyzer.draw_figure(self.frame, self.misis)
         return True

@@ -5,7 +5,7 @@ from math import sin, cos
 class Object3D:
     """Класс для формирования точечных 3D фигур"""
     OBJ_POINT = 0
-    OBJ_CUBE = 1
+    OBJ_PARALL = 1
     OBJ_MISiS = 2
 
     def __init__(self, pos : vector, eulerRot : vector, type : int = 0, width = 1.0, height = 1.0, length = 1.0):
@@ -21,7 +21,7 @@ class Object3D:
     def calcByType(self):
         self.vectors = []
         self.links = []
-        if self.type == Object3D.OBJ_CUBE:
+        if self.type == Object3D.OBJ_PARALL:
             for x in [-0.5,0.5]: # Генерация точек всех углов в нужном порядке
                 for y in [-0.5,0.5]:
                     for z in [-0.5,0.5]:
