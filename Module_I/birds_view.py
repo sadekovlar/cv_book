@@ -1,6 +1,12 @@
-from example import MyReader
 import numpy as np
 import cv2
+import os
+import sys
+current = os.path.dirname(os.path.realpath(__file__))
+parent = os.path.dirname(current)
+sys.path.append(parent)
+from example import MyReader
+
 
 class BirdsView(MyReader):
     corner_points_array = None
@@ -14,7 +20,7 @@ class BirdsView(MyReader):
         super().on_frame()
         matrix = cv2.getPerspectiveTransform(self.corner_points_array, self.img_params)
         bv = cv2.warpPerspective(self.frame, matrix, (self.width, self.height))
-        scale_percent = 20  # percent of original size
+        scale_percent = 30
         width_s = int(self.width * scale_percent / 100)
         height_s = int(self.height * scale_percent / 100)
         dim = (width_s, height_s)
@@ -36,8 +42,9 @@ class BirdsView(MyReader):
         imgBr = [self.width, self.height]
         imgBl = [0, self.height]
         self.img_params = np.float32([imgTl, imgTr, imgBr, imgBl])
-if __name__ == "__main__":
 
+
+if __name__ == "__main__":
     for number in range(235, 236):
         init_args = {
             'path_to_data_root' : './data/tram/'
