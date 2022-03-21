@@ -1,66 +1,78 @@
+import cv2
 import numpy as np
-from .vector import Vector3 as vector
-from math import sin, cos
+import itertools
+from spatial_geometry_tools.point import Point3d as Point
+from spatial_geometry_tools.calib import Calib
 
-class Object3D:
-    """Класс для формирования точечных 3D фигур"""
-    OBJ_POINT = 0
-    OBJ_PARALL = 1
-    OBJ_MISiS = 2
+class Object3d:
+    """Класс для формирования параллелепипеда заданных размеров."""
 
-    def __init__(self, pos : vector, eulerRot : vector, type : int = 0, width = 1.0, height = 1.0, length = 1.0):
-        self.rootPos = pos                              # Координаты центра объекта
-        self.rot = eulerRot                             # Угол поворота
-        self.type = type                                # Тип отображаемой фигуры
-        self.w, self.h, self.l = width,height,length    # Ширина, Высота и Длина
-        self.calcByType()                               # Функция для выполнения расчёта координат точек и связей формирующих фигуру
+    def __init__(self, pos : Point, eulerRot : np.array, width = 1.0, height = 1.0, length = 1.0, colorVertex : tuple = (255,0,0), colorEdge : tuple = (0,255,0)):
+        self._pos = pos                                 # Позиция объекта
+        self._rotation = eulerRot                       # Угол поворота объекта
+        self._size = np.array([width, height, length])  # Размер объекта (ширина, высота, длина)
+        self._colors = (colorVertex, colorEdge)         # Цвет вершин и граней/диагоналей
+        self.reCalcPoints()                             # Перерасчёт точек с учётом всех текущих параметров
 
-    def setRotation(self, eurlerRot : vector):
-        self.rot = eurlerRot
+    @property
+    def pos(self):
+        """Параметр: позиция параллелепипеда."""
+        return self._pos
 
-    def calcByType(self):
-        self.vectors = []
-        self.links = []
-        if self.type == Object3D.OBJ_PARALL:
-            for x in [-0.5,0.5]: # Генерация точек всех углов в нужном порядке
-                for y in [-0.5,0.5]:
-                    for z in [-0.5,0.5]:
-                        z *= round(np.sign(y))
-                        self.vectors.append(vector(x*self.w,y*self.l,z*self.h))
-            for i in range(4): 
-                self.links.append( (i, i+4) ) # Настройка связей в формате (ОТ,ДО) для соединения линиями в нужной последовательности..
-                self.links.append( (i, (i+1)%4) )
-                self.links.append( tuple(i+4 for i in self.links[-1] ) )
-        elif self.type == Object3D.OBJ_MISiS:
-            charM = ( vector(-0.4,0,-0.5), vector(-0.4,0,0.5), vector(0.0,0,0.0), vector(0.4,0,0.5), vector(0.4,0,-0.5) )
-            charIb = ( vector(-0.4,0,0.5), vector(-0.4,0,-0.5), vector(0.4,0,0.5), vector(0.4,0,-0.5) )
-            charIs = ( vector(-0.4,0,0.2), vector(-0.4,0,-0.5), vector(0.4,0,0.2), vector(0.4,0,-0.5) )
-            charS = ( vector(0.4,0,0.5), vector(-0.3,0,0.5), vector(-0.4,0,0.4), vector(-0.4,0,-0.4), vector(-0.3,0,-0.5), vector(0.4,0,-0.5) )
-            text = (charM, charIb, charS, charIs, charS)
-            
-            lt = len(text)
-            for o in range(lt):
-                last = len(self.vectors)
-                for p in text[o]:
-                    self.vectors.append( vector( (p.x + (-3.6+1.2*o))/lt*self.w, p.y/lt*self.l, p.z/lt*self.h) )
-                for i in range(last, len(self.vectors)-1):
-                    self.links.append( (i,i+1) )
-        else: # Object3D.OBJ_POINT
-            self.vectors.append(self.rootPos)
+    @pos.setter
+    def pos(self, value : Point):
+        self._pos = value
+        self.reCalcPoints()
 
-    def get(self): 
-        calcvectors = []
+    @property
+    def rotation(self):
+        """Параметр: угол поворота параллелепипеда."""
+        return self._rotation
 
-        R = lambda a, b, c: np.array([
-            [ cos(a)*cos(b), cos(a)*sin(b)*sin(c)-sin(a)*cos(c), cos(a)*sin(b)*cos(c)+sin(a)*sin(c) ],
-            [ sin(a)*cos(b), sin(a)*sin(b)*sin(c)+cos(a)*cos(c), sin(a)*sin(b)*cos(c)-cos(a)*sin(c) ],
-            [ -sin(b), cos(b)*sin(c), cos(b)*cos(c) ]
-        ])
-        R = R(self.rot.x, self.rot.y, self.rot.z)
+    @rotation.setter
+    def rotation(self, value : np.array):
+        self._rotation = value
+        self.reCalcPoints()
 
-        for p in self.vectors:
-            a = self.rootPos.vec + R.dot(p.vec)
-            calcvectors.append(vector(
-                tuple(a.T[0])
-            ))
-        return (calcvectors, self.links)
+    def add_rotation(self, value : np.array):
+        """Функция: к текущему углу поворота прибавляет указанное значение."""
+        self._rotation = self._rotation + value
+        self.reCalcPoints()
+
+    @property
+    def size(self):
+        """Параметр: размер параллелепипеда."""
+        return self._size
+
+    @size.setter
+    def size(self, value : np.array):
+        self._size = value
+        self.reCalcPoints()
+
+    @property
+    def color(self):
+        """Параметр: цвет вершин и граней."""
+        return self._colors
+    
+    @color.setter
+    def color(self, value : tuple):
+        self._colors = value
+
+
+    def reCalcPoints(self):
+        """Функция для переопределения координат вершин в случае изменения параметров объекта."""
+        self.points = []
+        R = Calib.rotation_matrix_from(self.rotation)
+        for t in itertools.product(*([[-0.5,0.5]]*3)):
+            self.points.append(self.pos.vec.T + R.dot(t)*self.size)
+        
+    def draw(self, img, camera, drawVertex=True, drawEdges=True):
+        """Функция отрисовки вершин и граней данной фигуры."""
+        if drawVertex: # Отрисовка вершин
+            for i in self.points:
+                cv2.circle(img, camera.project_point_3d_to_2d( Point(i[0]) ), 3, self.color[0], 2)
+        if drawEdges: # Отрисовка граней
+            for t in itertools.combinations(range(len(self.points)), 2):
+                p1 = camera.project_point_3d_to_2d( Point(self.points[t[0]][0]) )
+                p2 = camera.project_point_3d_to_2d( Point(self.points[t[1]][0]) )
+                cv2.line(img, p1, p2, self.color[1])
