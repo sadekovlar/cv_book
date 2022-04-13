@@ -32,12 +32,10 @@ def draw_glares(img, mask, color=(0, 255, 0)):
 # Подавляет яркость пикселей. Чисто визуальный эффект
 def suppress_lightness(img, mask, quality=0.9):
     hls = cv2.cvtColor(img, cv2.COLOR_BGR2HLS)
-
     non_zero = cv2.findNonZero(mask)
     for idx in non_zero:
         y, x = idx[0][0], idx[0][1]
         new_value = hls.item(x, y, 1) * quality
         hls.itemset(x, y, 1, new_value)
-
     result = cv2.cvtColor(hls, cv2.COLOR_HLS2BGR)
     return result
