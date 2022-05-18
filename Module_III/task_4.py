@@ -21,5 +21,5 @@ if __name__ == "__main__":
             if SHOW_RES:
                 for id, img in enumerate(res_imgs):
                     cv2.imshow(f'KeyPoints-{id}', img)
-                    # cv2.imwrite(f'KeyPoints-{id}.png', img)
+                    cv2.imwrite(f'KeyPoints-{id}.png', img)
                 cv2.waitKey(0)
