@@ -15,12 +15,14 @@ class PointsCounter:
         self.calib = Calib(calib_dict)
         self.camera = Camera(self.calib)
         self.gps = []
-        self.speed = 0
+        self.speed = 0 # Скорость в км/ч
+        self.time_per_shot = 0.02 # Каждые сколько секунд делается снимок
         self.left_2d_far = self.camera.project_point_3d_to_2d(Point((-1.5, 12, 0)))
         self.right_2d_far = self.camera.project_point_3d_to_2d(Point((1.5, 12, 0)))
         self.A_inv = self.count_matrix_for_2d_3d_projection()
         self.points_importance = point_importance  # Уровень отсечения точек
-        self.yaw = 0;
+        self.yaw = 0
+        self.image_shape = None
 
     def count_point_moving(self, Ri, t_ii1, yaw_i: int = 0):
         """
@@ -46,12 +48,17 @@ class PointsCounter:
             a = self.camera.project_point_3d_to_2d(i)
 
             # Проверка, что погрешность не выходит за рамки массива
-            if a[0] < 540 and a[1] < 540:
+            image_height = self.image_shape[0]
+            if a[0] < image_height and a[1] < image_height:
                 RR_i.append(a)
         return RR_i
 
+    def speed_metre_per_sec(self):
+        return self.speed * 10 / 36
+
     def perv_points_projection_to_new(self, img):
         """Отрисовка точкек на изображении - старых и новых"""
+        self.image_shape = img.shape
         # Применение детектора Хариса для текущего изображения
         # И обрезка лишних точек
         new_Harris = self.apply_Harris(img)
@@ -59,14 +66,12 @@ class PointsCounter:
         new_Harris[:, :self.left_2d_far[0]] = 0
         new_Harris[:, self.right_2d_far[0]:] = 0
 
-        time = 0.02 * 10 / 36  # Время для расчета пути (с переводом в м/с)
-
         # Работа с точками из предыдущего кадра
         if self.prev_points.size > 0:
             a = np.array(
                 self.count_point_moving(
                     self.get_3d_points_on_land(self.prev_points),
-                    [0, time * self.speed, 0.]))
+                    [0, self.time_per_shot * self.speed_metre_per_sec(), 0.]))
             if a.size != 0:
                 # Отрисовка рассчитанных точек синим
                 img[a[:, 0], a[:, 1]] = [255, 0, 0]
@@ -177,7 +182,6 @@ class Reader(SeasonReader):
 
 
 if __name__ == '__main__':
-    video_name = 'klt.427.003.mp4'
     init_args = {
         'path_to_data_root': '../data/tram/'
     }
