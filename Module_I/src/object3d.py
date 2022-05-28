@@ -7,7 +7,7 @@ from spatial_geometry_tools.calib import Calib
 class Object3d:
     """Класс для формирования параллелепипеда заданных размеров."""
 
-    def __init__(self, pos : Point, eulerRot : np.array, width : float = 1.0, height : float = 1.0, length : float = 1.0, colorVertex : tuple = (255,0,0), colorEdge : tuple = (0,255,0)):
+    def __init__(self, pos : Point, eulerRot : np.array, width = 1.0, height = 1.0, length = 1.0, colorVertex : tuple = (255,0,0), colorEdge : tuple = (0,255,0)):
         self._pos = pos                                 # Позиция объекта
         self._rotation = eulerRot                       # Угол поворота объекта
         self._size = np.array([width, height, length])  # Размер объекта (ширина, высота, длина)
