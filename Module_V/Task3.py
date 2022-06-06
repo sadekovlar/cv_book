@@ -1,9 +1,10 @@
 import math
 
 import cv2
-from Module_I.season_reader import SeasonReader
-from Module_I.load_calib import CalibReader
 import numpy as np
+
+from Module_I.load_calib import CalibReader
+from Module_I.season_reader import SeasonReader
 
 
 class Horizon:
@@ -30,32 +31,29 @@ class Horizon:
         return math.ceil(x), math.ceil(y)
 
     @staticmethod
-    def is_belong_to_line(x1, y1, x2, y2, x3, y3):
-        is_x_same = x1 == x2 == x3
-        is_y_same = y1 == y2 == y3
-        if is_x_same or is_y_same:
-            return True
-        return (x1 - x3) * (y2 - y1) == (x2 - x1) * (y1 - y3)
+    def is_point_belong_to_image(x, y, img):
+        is_x_belong_to_image = 0 <= x < img.shape[1]
+        is_y_belong_to_image = 0 <= y < img.shape[0]
+        return is_x_belong_to_image and is_y_belong_to_image
 
     def get_intersection_points(self, roads, img):
         intersection_points = {}
-        for i in roads:
-            for j in roads:
-                if i.all() == j.all():
+        for i in range(0, len(roads) - 1):
+            for j in range(i + 1, len(roads)):
+                elem_i, elem_j = roads[i], roads[j]
+                if elem_i.all() == elem_j.all():
                     continue
                 # Поиск точки пересечения линий
-                x, y = self.find_intersection(i, j)
+                x, y = self.find_intersection(elem_i, elem_j)
                 # Отсеивание точек, не принадлежащих изображению
-                is_x_belong_to_image = 0 <= x < img.shape[1]
-                is_y_belong_to_image = 0 <= y < img.shape[0]
-                if not (is_x_belong_to_image and is_y_belong_to_image):
+                if not self.is_point_belong_to_image(x, y, img):
                     continue
                 # Подсчёт количества прямых, пересекающихся в этой точке
-                intersection_points[(x, y)] =\
+                intersection_points[(x, y)] = \
                     intersection_points.setdefault((x, y), 0) + 1
                 # Отрисовка линий
-                cv2.line(img, (i[0], i[1]), (i[2], i[3]), (255, 0, 0), 3)
-                cv2.line(img, (j[0], j[1]), (j[2], j[3]), (255, 0, 0), 3)
+                cv2.line(img, (elem_i[0], elem_i[1]), (elem_i[2], elem_i[3]), (255, 0, 0), 3)
+                cv2.line(img, (elem_j[0], elem_j[1]), (elem_j[2], elem_j[3]), (255, 0, 0), 3)
         return intersection_points
 
     def find_lines(self, img):
@@ -77,15 +75,15 @@ class Horizon:
         # Отсеивание линий, не принадлежащих рельсам
         left_threshold = 300
         right_threshold = 650
-        roads = lines[(lines[:, 0] < right_threshold) &\
-                      (lines[:, 0] > left_threshold) &\
-                      (lines[:, 2] < right_threshold) &\
-                      (lines[:, 2] > 300)]
+        roads = lines[(lines[:, 0] < right_threshold) &
+                      (lines[:, 0] > left_threshold) &
+                      (lines[:, 2] < right_threshold) &
+                      (lines[:, 2] > left_threshold)]
 
-        # Нахождение точек пересечения линий с линией потенциального горизонта
+        # Массив точек пересечения линий, оставшихся после отсеивания
         intersection_points = self.get_intersection_points(roads, img)
 
-        if not len(intersection_points):
+        if not intersection_points:
             return
 
         # Поиск точки, в которой больше всего пересечений
@@ -105,7 +103,7 @@ class Reader(SeasonReader):
         calib_reader.initialize(
             file_name='../data/tram/leftImage.yml',
             param=par)
-        self.horizont = Horizon()
+        self.horizon = Horizon()
 
         return True
 
@@ -115,7 +113,7 @@ class Reader(SeasonReader):
     def on_frame(self):
         cv2.putText(self.frame, f'GrabMsec: {self.frame_grab_msec}', (15, 50),
                     cv2.FONT_HERSHEY_PLAIN, 1.0, (0, 255, 0), 2)
-        self.horizont.find_lines(self.frame)
+        self.horizon.find_lines(self.frame)
         return True
 
     def on_gps_frame(self):
@@ -124,7 +122,6 @@ class Reader(SeasonReader):
         return True
 
     def on_imu_frame(self):
-        shot: dict = self.shot[self._imu_name]
         return True
 
 
