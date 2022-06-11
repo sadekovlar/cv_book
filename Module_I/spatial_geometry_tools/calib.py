@@ -7,7 +7,7 @@ class Calib:
 
     K - интринсики, D - дисторсия, r - поворот, t - смещение.
     """
-    def __init__(self, calib_dict):
+    def __init__(self, calib_dict: dict):
         self.cam_to_vr = np.array([
             [1, 0, 0],
             [0, 0, -1],
@@ -20,7 +20,7 @@ class Calib:
         self.t = calib_dict['t']
 
     @staticmethod
-    def rotation_matrix_from(angles):
+    def rotation_matrix_from(angles: list):
         sinuses = np.sin(angles)
         cosines = np.cos(angles)
         Rx = np.array([
