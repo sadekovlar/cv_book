@@ -10,18 +10,26 @@ class BirdsView(SeasonReader):
     img_params = None
     height = 0
     width = 0
+    matrix = None
 
     def on_init(self):
+        it = [x for x in os.listdir(self._data_path) if self._video_ext in x][0]
+        video_path = os.path.join(self._data_path, it)
+        print(video_path)
+        cap = cv2.VideoCapture(video_path)
+        if cap.isOpened():
+            self.width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+            self.height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        self.set_params()
+        self.matrix = cv2.getPerspectiveTransform(self.corner_points_array, self.img_params)
+        print(self.width, ' ', self.height)
         return True
 
     def on_shot(self):
         return True
 
     def on_frame(self):
-        if self.img_params is None:
-            self.set_params()
-        matrix = cv2.getPerspectiveTransform(self.corner_points_array, self.img_params)
-        bv = cv2.warpPerspective(self.frame, matrix, (self.width, self.height))
+        bv = cv2.warpPerspective(self.frame, self.matrix, (self.width, self.height))
         scale_percent = 30
         width_s = int(self.width * scale_percent / 100)
         height_s = int(self.height * scale_percent / 100)
@@ -36,17 +44,16 @@ class BirdsView(SeasonReader):
         return True
 
     def set_params(self):
-        self.height, self.width, _ = self.frame.shape
         bl = [0, self.height]
         br = [self.width, self.height]
         tr = [self.width * 3 / 5, self.height / 2.25]
         tl = [self.width * 2 / 5, self.height / 2.25]
         self.corner_points_array = np.float32([tl, tr, br, bl])
-        imgTl = [0, 0]
-        imgTr = [self.width, 0]
-        imgBr = [self.width, self.height]
-        imgBl = [0, self.height]
-        self.img_params = np.float32([imgTl, imgTr, imgBr, imgBl])
+        imgtl = [0, 0]
+        imgtr = [self.width, 0]
+        imgbr = [self.width, self.height]
+        imgbl = [0, self.height]
+        self.img_params = np.float32([imgtl, imgtr, imgbr, imgbl])
 
 
 if __name__ == "__main__":
