@@ -11,6 +11,7 @@ class GpsData:
         self.altArr = []
         self.speedArr = []
         self.yawArr = []
+        self.grabMsec = []
         self.s = cv.FileStorage()
 
     def collect_data(self, filename):
@@ -31,18 +32,21 @@ class GpsData:
                     alt = senseData.getNode("alt")
                     speed = senseData.getNode("speed")
                     yaw = senseData.getNode("yaw")
+                    grabMsec = mapping.getNode("grabMsec")
                     self.nordArr.append(nord.real())
                     self.eastArr.append(east.real())
                     self.altArr.append(alt.real())
                     self.speedArr.append(speed.real())
                     self.yawArr.append(yaw.real())
+                    self.grabMsec.append(int(grabMsec.real()))
         self.s.release()
         self.save_to_csv()
 
     def save_to_csv(self):
-        maindf = pd.DataFrame(data=None, columns=["nord", 'east', 'alt', 'speed', 'yaw'])
+        maindf = pd.DataFrame(data=None, columns=["nord", 'east', 'alt', 'speed', 'yaw', 'grabMsec'])
         for i in range(len(self.nordArr)):
-            df = pd.DataFrame(data=[[self.nordArr[i], self.eastArr[i], self.altArr[i], self.speedArr[i], self.yawArr[i]]], columns=["nord", 'east', 'alt', 'speed', 'yaw'])
+            df = pd.DataFrame(data=[[self.nordArr[i], self.eastArr[i], self.altArr[i], self.speedArr[i], self.yawArr[i],
+                                     self.grabMsec[i]]], columns=["nord", 'east', 'alt', 'speed', 'yaw', 'grabMsec'])
             maindf = pd.concat([maindf, df])
         if os.path.getsize("../data/tram/gps-data.csv") == 0:
             maindf.to_csv("../data/tram/gps-data.csv", sep=';', encoding='utf-8', index=False, mode='a', header=True)

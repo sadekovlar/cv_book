@@ -93,7 +93,13 @@ class Reader(SeasonReader):
         calib_dict = calib_reader.read()
         self.uv = list()
         self.direction_prediction = DirectionPrediction(calib_dict, 10)
+<<<<<<< HEAD
         self.direction_prediction.convert_gps_to_xy()
+=======
+        self.direction_prediction.read_files()
+        # self.direction_prediction.convert_gps_to_xy()
+
+>>>>>>> 32f3d95fe53437fb582ab7dcffa1621f8a0f4670
         return True
 
     def on_shot(self):
