@@ -26,25 +26,15 @@ class DirectionPrediction:
         self.center_near = Point((0.3, 5, 0))
         self.current_point = 0
         self.main_point = ()
-        self.x_values = []
-        self.y_values = []
+        self.df = []
         self.x_values_new = []
         self.y_values_new = []
-        self.grabMsec = []
         self.two_d_coords = []
         self.gps_data = GpsData()
         self.GPS_DIR = "../data/tram/"  # This is your Project Root
         self.files = [f for f in os.listdir(self.GPS_DIR) if f.endswith("info.yml")]
         self.points = []
         self.files.sort()
-
-    def read_files(self):
-        self.gps_data.erase_content(self.GPS_DIR + 'gps-data.csv')
-        # self.gps_data.collect_data("../data/tram/trm.169.007.info.yml")
-        # self.gps_data.collect_data("../data/tram/trm.169.008.info.yml")
-        # self.gps_data.collect_data("../data/tram/trm.169.009.info.yml")
-        for f in self.files:
-            self.gps_data.collect_data(self.GPS_DIR + f)
 
     @staticmethod
     def mercator(data, origin):
@@ -67,41 +57,28 @@ class DirectionPrediction:
         return [x, y]
 
     def draw_point(self, img: np.array, data: dict):
-        # self.gps_frame += 1
-        #x_current = self.x_values[self.current_point]
-        #y_current = self.y_values[self.current_point]
-        x_current, y_current = DirectionPrediction.mercator([data['nord'], data['east']], [55.88677827, 37.642756055])
-        self.x_values.append(x_current)
-        self.y_values.append(y_current)
-        x = self.x_values - x_current
-        y = self.y_values - y_current
-        #yawl = math.atan2(self.y_values[self.current_point+1]-y_current, self.x_values[self.current_point+1]-x_current)
-        if len(self.x_values) and len(self.y_values) != 0:
-            yawl = math.atan2(self.y_values[self.current_point] - y_current, self.x_values[self.current_point] - x_current)
-        #plt.plot(x, y, label="origin")
-            x = x_current * math.cos(yawl) - y_current * math.sin(yawl)
-            y = x_current * math.sin(yawl) + y_current * math.cos(yawl)
-            self.x_values_new.append(x)
-            self.y_values_new.append(y)
-        #plt.plot(x, y, label='new')
-        #plt.legend()
-        #plt.show()
-        #print(0)
-        """for el in range(0, len(x)):
-            center_near = self.camera.project_point_3d_to_2d(Point((x[el], y[el], 0)))
-            cv.circle(img, center_near, 10, RED, LINE_WIDTH)"""
+        x_cur, y_cur = self.mercator([data['nord'], data['east']], [55.88677827, 37.642756055])
+        flag = self.df.grabMsec > data['grabMsec']
+        dFrame = self.df[flag]
+        dFrame.x = dFrame.x - x_cur
+        dFrame.y = dFrame.y - y_cur
+        yaw = math.atan2(dFrame['y'].values[1] - dFrame['y'].values[0],
+                         dFrame['x'].values[1] - dFrame['x'].values[0]) - np.pi/2
+        x = dFrame['x'] * math.cos(-yaw) - dFrame['y'] * math.sin(-yaw)
+        y = dFrame['x'] * math.sin(-yaw) + dFrame['y'] * math.cos(-yaw)
+
+        uv_image = list()
+        for el in range(0, len(x)):
+            center_near = self.camera.project_point_3d_to_2d(Point((x.values[el], y.values[el], 0)))
+            uv_image.append(center_near)
+        return uv_image
 
     def convert_gps_to_xy(self):
-        initial_data = self.gps_data.read_from_csv(self.GPS_DIR + "gps-data.csv")
-        [x, y] = DirectionPrediction.mercator([initial_data['nord'].values, initial_data['east'].values],
-                                              [55.88677827, 37.642756055])
-        point3d = Point((x[0], y[0], 0))
-        point2d = self.camera.project_point_3d_to_2d(point3d)
-        self.main_point = point2d
-        for el in initial_data['grabMsec']:
-            self.grabMsec.append(el)
-        self.x_values = x
-        self.y_values = y
+        df = pd.read_csv(self.GPS_DIR + "gps.csv", sep=';', index_col=False)
+        [x, y] = self.mercator([df['nord'].values, df['east'].values], [55.88677827, 37.642756055])
+        df['x'] = x
+        df['y'] = y
+        self.df = df
 
 
 class Reader(SeasonReader):
@@ -114,9 +91,9 @@ class Reader(SeasonReader):
             file_name='../data/tram/leftImage.yml',
             param=par)
         calib_dict = calib_reader.read()
+        self.uv = list()
         self.direction_prediction = DirectionPrediction(calib_dict, 10)
-        self.direction_prediction.read_files()
-        # self.direction_prediction.convert_gps_to_xy()
+        self.direction_prediction.convert_gps_to_xy()
         return True
 
     def on_shot(self):
@@ -129,11 +106,9 @@ class Reader(SeasonReader):
         return True
 
     def on_gps_frame(self):
-        # print(self.direction_prediction.gps_start)
         shot: dict = self.shot[self._gps_name]['senseData']
         shot['grabMsec'] = self.shot[self._gps_name]['grabMsec']
-        self.direction_prediction.draw_point(self.frame, shot)
-        return True
+        return self.direction_prediction.draw_point(self.frame, shot)
 
     def on_imu_frame(self):
         shot: dict = self.shot[self._imu_name]
@@ -177,9 +152,8 @@ class Reader(SeasonReader):
                     return False
 
                 if self._gps_name in shot:
-                    did_on_frame: bool = self.on_gps_frame()
-                    if not did_on_frame:
-                        return False
+                    uv = self.on_gps_frame()
+                    self.uv = uv
 
                 if self._imu_name in shot:
                     did_on_frame: bool = self.on_imu_frame()
@@ -194,6 +168,8 @@ class Reader(SeasonReader):
                     if not did_on_frame:
                         return False
 
+                    for u_v_ in self.uv:
+                        cv.circle(self.frame, u_v_, 5, RED, LINE_WIDTH)
                     cv.imshow(self._window_name, self.frame)
                     keyboard = cv.waitKey(10)
                     if keyboard == ord('q'):
