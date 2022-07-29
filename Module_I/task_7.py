@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 import os
 import sys
-from season_reader import SeasonReader
+from srccam.season_reader import SeasonReader
 
 
 class BirdsView(SeasonReader):

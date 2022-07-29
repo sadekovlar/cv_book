@@ -1,8 +1,8 @@
 import cv2
 import numpy as np
 import itertools
-from spatial_geometry_tools.point import Point3d as Point
-from spatial_geometry_tools.calib import Calib
+from .point import Point3d as Point
+from .calib import Calib
 
 class Object3d:
     """Класс для формирования параллелепипеда заданных размеров."""

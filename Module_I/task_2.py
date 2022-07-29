@@ -1,12 +1,12 @@
 import cv2
 import numpy as np
 
-from Module_I.load_calib import CalibReader
-from Module_I.season_reader import SeasonReader
+from srccam.load_calib import CalibReader
+from srccam.season_reader import SeasonReader
 
-from Module_I.spatial_geometry_tools.calib import Calib
-from Module_I.spatial_geometry_tools.camera import Camera
-from Module_I.spatial_geometry_tools.point import Point3d as Point
+from srccam.calib import Calib
+from srccam.camera import Camera
+from srccam.point import Point3d as Point
 
 
 BLUE = (255, 0, 0)

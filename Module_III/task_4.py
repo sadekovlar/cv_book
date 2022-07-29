@@ -1,6 +1,6 @@
 import cv2
 
-from src.detector_stable_key_points import *
+from detector_stable_key_points import *
 
 SHOW_RES = True
 

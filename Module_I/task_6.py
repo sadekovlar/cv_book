@@ -3,8 +3,8 @@ from pandas import array
 import requests
 import cv2
 
-from season_reader import SeasonReader
-from src.sence_data import SenseData
+from srccam.season_reader import SeasonReader
+from srccam.src.sence_data import SenseData
 
 DISPLAY_SPEC = {
     'font': cv2.FONT_HERSHEY_PLAIN,

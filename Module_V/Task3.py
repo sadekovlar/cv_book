@@ -3,8 +3,8 @@ import math
 import cv2
 import numpy as np
 
-from Module_I.load_calib import CalibReader
-from Module_I.season_reader import SeasonReader
+from srccam.load_calib import CalibReader
+from srccam.season_reader import SeasonReader
 
 
 class Horizon:
