@@ -1,13 +1,21 @@
-### Материалы к курсу "Компьютерное зрение в задачах автономного вождения" 
-### Содержание [пополняется]:
-- Модуль 1 посвящен вопросам проекции точек из мировой системы координат в систему координат камеры, BEV преобразованию, использования квартернионов для поворотов объектов и визуальному оформлению рабочего пространства "умного навигатора";
-- Модуль 2 посвящен вопросам препроцессинга изображений с целью улучшения его визуального восприятия и устранения артефактов (дождь, снег, солнце, работа дворников) для лучшего решения задач распознавания образов;
-- Модуль 3 посвящен вопросам использования детекторов углов и работе с извлеченными точками с целью минимизации информации о сцене 
-- Модуль 4 использует детекторы областей для отслеживания движения объектов сцены
-- Модуль 5 использует детектор линий для определения положения камеры, уровня горизонта и распознавания объектов дорожной инфраструктуры
-- Модуль 6 использование оптического потока для определения характера движения и распознавания объектов сцены
-- Модуль 7 работа со стереокамерами для отрисовки траектории движения и построения карты глубины
+### Materials for the course "Computer Vision in Autonomous Driving Tasks" 
+### Content [in development]:
+- Module 1 Basic image operation
+- Module 1a Camera, project and reproject points, bev transform
+- Module 1b Camera calibration
+- Module 2 Image preprocessing, filters, histogram (artifact correction) 
+- Module 3 Edge detector
+- Module 4 Feature point, feature tracking, image comparison
+- Module 4a Area detector. Segmentattion mapping
+- Module 5 Hough Detector for camera calibration
+- Module 6 Optical flow for detect moving object  
+- Module 6a Optical flow for video stabilization
+- Module 7 Stereovision. Disparity map, 3d point create
+- Module 7a Stereovision. Camera calibration
+- Module 8 Visual odometry
+- Module 9 Structure for motion
+- Module 10 Video and inertial data fusion
 
-### Требования
+### Requirements
 python 3.9
 opencv 3.4.9
