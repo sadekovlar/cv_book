@@ -1,6 +1,6 @@
 import cv2
 
-IMAGE_PATH = 'image.jpg'
+IMAGE_PATH = 'road.png'
 
 image = cv2.imread(IMAGE_PATH)
 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
