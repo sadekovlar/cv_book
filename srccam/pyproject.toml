@@ -1,0 +1,43 @@
+[tool.poetry]
+name = "srccam"
+version = "1.2.1"
+description = "Package for projection and read calibs"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+opencv-python = "^3.4.9"
+pyyaml = "^6.0"
+
+[tool.poetry.group.dev.dependencies]
+black            = { version = "^23.1.0", extras = ["jupyter"] }
+isort            = "^5.12"
+flake8           = "^6.0.0"
+Flake8-pyproject = "^1.2.2"
+pre-commit       = "^3.0.2"
+pytest           = "^7.2.1"
+pytest-cov       = "^4.0.0"
+ipywidgets       = "^8.0.4"
+pandas-stubs     = "^1.5.3.230203"
+
+[tool.black]
+line-length    = 120
+target-version = ['py39']
+
+[tool.flake8]
+max-line-length            = 120
+max-complexity             = 10
+max-annotations-complexity = 3
+max-expression-complexity  = 7
+extend-ignore              = ["E203", "W503"]
+
+[tool.isort]
+profile = "black"
+
+[tool.autoflake]
+check = true
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
