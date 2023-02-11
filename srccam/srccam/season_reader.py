@@ -1,32 +1,45 @@
 import os
+
 import yaml
+
 try:
     from yaml import CLoader as Loader
 except ImportError:
     from yaml import Loader
+
 import gzip
+from typing import List, Optional
+
 import cv2
 import numpy as np
-from typing import Optional, List
+
 
 class SeasonReader:
-    _window_name: str = 'Frame'
+    _window_name: str = "Frame"
     _start_episode: int = 1
     _finish_episode: int = 10
-    _camera_name: str = 'leftImage'
-    _gps_name: str = 'ubloxGps'
-    _imu_name: str = 'minsEth'
-    _data_path: str = '/data/'
-    _video_ext: str = 'avi'
+    _camera_name: str = "leftImage"
+    _gps_name: str = "ubloxGps"
+    _imu_name: str = "minsEth"
+    _data_path: str = "/data/"
+    _video_ext: str = "avi"
 
     frame: Optional[np.ndarray] = None
     frame_grab_msec: int = 0
     shot_grab_msec: int = 0
     shot: Optional[dict] = None
 
-    def initialize(self, path_to_data_root: str = '', window_name: str = 'Frame',
-                   camera_name: str = 'leftImage', start_episode: int = 1, finish_episode: int = 999, video_ext: str = 'avi',
-                   gps_name: str = 'emlidLeft', imu_name: str = 'minsEth') -> bool:
+    def initialize(
+        self,
+        path_to_data_root: str = "",
+        window_name: str = "Frame",
+        camera_name: str = "leftImage",
+        start_episode: int = 1,
+        finish_episode: int = 999,
+        video_ext: str = "avi",
+        gps_name: str = "emlidLeft",
+        imu_name: str = "minsEth",
+    ) -> bool:
         self._data_path = path_to_data_root
         self._camera_name = camera_name
         self._window_name = window_name
@@ -49,7 +62,7 @@ class SeasonReader:
             break
 
         video_iter = sorted([x for x in data_files if self._video_ext in x])
-        
+
         i_episode = self._start_episode
         print("->run")
         while i_episode <= self._finish_episode:
@@ -57,16 +70,16 @@ class SeasonReader:
                 break
 
             it = video_iter[i_episode - 1]
-            episode_title = ''.join(e + '.' for e in it.split('.')[:3])
-            video_path = os.path.join(self._data_path,  it)
-            info_path = os.path.join(self._data_path, episode_title + 'info.yml.gz')
+            episode_title = "".join(e + "." for e in it.split(".")[:3])
+            video_path = os.path.join(self._data_path, it)
+            info_path = os.path.join(self._data_path, episode_title + "info.yml.gz")
             info_file = self._read_info_file(info_path)
-            cap = cv2.VideoCapture(video_path) 
+            cap = cv2.VideoCapture(video_path)
 
             print("-> " + episode_title)
-            for shot in info_file['shots']:
+            for shot in info_file["shots"]:
                 self.shot = shot
-                self.shot_grab_msec = shot['grabMsec']
+                self.shot_grab_msec = shot["grabMsec"]
                 did_on_shot: bool = self.on_shot()
                 if not did_on_shot:
                     return False
@@ -91,7 +104,7 @@ class SeasonReader:
 
                     cv2.imshow(self._window_name, self.frame)
                     keyboard = cv2.waitKey(10)
-                    if keyboard == ord('q'):
+                    if keyboard == ord("q"):
                         cap.release()
                         return True
 
@@ -110,20 +123,20 @@ class SeasonReader:
 
     def on_gps_frame(self) -> bool:
         raise NotImplementedError()
-        
+
     def on_imu_frame(self) -> bool:
         raise NotImplementedError()
-        
+
     @staticmethod
     def _read_info_file(file_path) -> dict:
         if not os.path.isfile(file_path):
-            raise FileNotFoundError('error opening info file ' + file_path)
+            raise FileNotFoundError("error opening info file " + file_path)
 
         try:
-            with gzip.open(file_path, 'rt') as f:
+            with gzip.open(file_path, "rt") as f:
                 f.readline()
                 f = f.read()
-                f = f.replace(':', ': ')
+                f = f.replace(":", ": ")
                 yml = yaml.load(f, Loader=Loader)
 
                 return yml

@@ -2,9 +2,9 @@ import cv2
 
 
 class CalibReader:
-    _file_name: str = 'leftImage.yaml'
+    _file_name: str = "leftImage.yaml"
 
-    def initialize(self, file_name: str = '', param = list()) -> bool:
+    def initialize(self, file_name: str = "", param=list()) -> bool:
         self._file_name = file_name
         self._param = param
 
@@ -17,10 +17,11 @@ class CalibReader:
             for index in list_param:
                 param[index] = fs.getNode(index).mat()
         fs.release()
-        return param 
+        return param
+
 
 if __name__ == "__main__":
-    par = ["K", "D", "r", "t" ]
-    calib = CalibReader(file_name = '../data/tram/leftImage.yml', param = par)
+    par = ["K", "D", "r", "t"]
+    calib = CalibReader(file_name="../data/tram/leftImage.yml", param=par)
     matrix = calib.read()
     print(matrix)

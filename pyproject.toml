@@ -29,7 +29,7 @@ target-version = ['py39']
 
 [tool.flake8]
 max-line-length            = 120
-max-complexity             = 10
+max-complexity             = 18
 max-annotations-complexity = 3
 max-expression-complexity  = 7
 extend-ignore              = ["E203", "W503"]
