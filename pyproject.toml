@@ -6,11 +6,13 @@ authors     = ["Your Name <you@example.com>"]
 readme      = "README.md"
 
 [tool.poetry.dependencies]
-python     = "^3.9, <3.12"
-srccam     = { path = "./srccam", develop = true }
-matplotlib = "^3.6.3"
-pandas     = "^1.5.3"
-numpy      = "^1.24.2"
+python        = "^3.9, <3.12"
+srccam        = { path = "./srccam", develop = true }
+opencv-python = "^3.4.9"
+pyyaml        = "^6.0"
+matplotlib    = "^3.6.3"
+pandas        = "^1.5.3"
+numpy         = "^1.24.2"
 
 [tool.poetry.group.dev.dependencies]
 black            = { version = "^23.1.0", extras = ["jupyter"] }
@@ -21,7 +23,6 @@ pre-commit       = "^3.0.2"
 pytest           = "^7.2.1"
 pytest-cov       = "^4.0.0"
 ipywidgets       = "^8.0.4"
-pandas-stubs     = "^1.5.3.230203"
 
 [tool.black]
 line-length    = 120
