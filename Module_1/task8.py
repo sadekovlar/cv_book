@@ -13,7 +13,7 @@ reflect101 = cv2.copyMakeBorder(image, 50, 50, 50, 50, cv2.BORDER_REFLECT_101) #
 wrap = cv2.copyMakeBorder(image, 50, 50, 50, 50, cv2.BORDER_WRAP) #Add border with pixels from opposite side 
 constant= cv2.copyMakeBorder(image, 10, 10, 10, 10, cv2.BORDER_CONSTANT, value=BLUE) #Border consists constant 'value'
 
-cv2.imshow(replicate)
+cv2.imshow('replicated', replicate)
 cv2.waitKey()
 
 cv2.imshow('reflected', reflect)
