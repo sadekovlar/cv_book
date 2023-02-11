@@ -10,7 +10,7 @@ BLUE = [0, 0, 255]
 replicate = cv2.copyMakeBorder(image, 50, 50, 50, 50, cv2.BORDER_REPLICATE) #Pixels of border copy last pixels from original image
 reflect = cv2.copyMakeBorder(image, 50, 50, 50, 50,cv2.BORDER_REFLECT) #Border will be mirror reflection of the border element
 reflect101 = cv2.copyMakeBorder(image, 50, 50, 50, 50, cv2.BORDER_REFLECT_101) #The same, but the last pixels didn't repeat
-wrap = cv2.copyMakeBorder(image, 50, 50, 50, 50, cv2.BORDER_WRAP) 
+wrap = cv2.copyMakeBorder(image, 50, 50, 50, 50, cv2.BORDER_WRAP) #Add border with pixels from opposite side 
 constant= cv2.copyMakeBorder(image, 10, 10, 10, 10, cv2.BORDER_CONSTANT, value=BLUE) #Border consists constant 'value'
 
 cv2.imshow(replicate)
