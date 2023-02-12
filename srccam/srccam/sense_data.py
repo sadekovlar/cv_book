@@ -15,14 +15,14 @@ class SenseData:
     _yaw: float = 0.0
 
     def __init__(self, data_) -> None:
-        self._grabNumber = data_['grabNumber']
-        data_ = data_['senseData']
-        self._timestamp = data_['timestamp']
-        self._nord = data_['nord']
-        self._east = data_['east']
-        self._alt = data_['alt']
-        self._speed = data_['speed']
-        self._yaw = data_['yaw']
+        self._grabNumber = data_["grabNumber"]
+        data_ = data_["senseData"]
+        self._timestamp = data_["timestamp"]
+        self._nord = data_["nord"]
+        self._east = data_["east"]
+        self._alt = data_["alt"]
+        self._speed = data_["speed"]
+        self._yaw = data_["yaw"]
 
     # Конвертация градусов в градусы, в минуты и в секунды
     @staticmethod
@@ -32,18 +32,29 @@ class SenseData:
         sec = minute * 60 - int(minute) * 60
         minute = int(minute)
         sec = int(sec)
-        return {'grad': grad,
-                'minute': minute,
-                'sec': sec}
+        return {"grad": grad, "minute": minute, "sec": sec}
 
     def convert_geo(self) -> dict:
-        return {'nord': self._dd2dms(self._nord),
-                'east': self._dd2dms(self._east)}
+        return {"nord": self._dd2dms(self._nord), "east": self._dd2dms(self._east)}
 
     def get_geo_str(self):
         geo = self.convert_geo()
-        nord_str = str(geo['nord']['grad']) + 'D' + str(geo['nord']['minute']) + "'" + str(geo['nord']['sec']) + '\"'
-        east_str = str(geo['east']['grad']) + 'D' + str(geo['east']['minute']) + "'" + str(geo['east']['sec']) + '\"'
+        nord_str = (
+            str(geo["nord"]["grad"])
+            + "D"
+            + str(geo["nord"]["minute"])
+            + "'"
+            + str(geo["nord"]["sec"])
+            + '"'
+        )
+        east_str = (
+            str(geo["east"]["grad"])
+            + "D"
+            + str(geo["east"]["minute"])
+            + "'"
+            + str(geo["east"]["sec"])
+            + '"'
+        )
         return nord_str, east_str
 
     # Конвертация в градусы

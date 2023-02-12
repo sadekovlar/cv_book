@@ -1,0 +1,15 @@
+[tool.poetry]
+name        = "srccam"
+version     = "1.2.1"
+description = "Package for projection and read calibs"
+authors     = ["Your Name <you@example.com>"]
+readme      = "README.md"
+
+[tool.poetry.dependencies]
+python        = "^3.9"
+opencv-python = "^3.4.9"
+pyyaml        = "^6.0"
+
+[build-system]
+requires      = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
