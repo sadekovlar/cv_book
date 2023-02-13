@@ -1,19 +1,18 @@
 import cv2
-import numpy as np
 
-image = cv2.imread('images/input.jpg')
-height, width = image.shape[:2]
+image = cv2.imread("./image.jpg")
+height, width = image.shape[:2]  # Первые 2 элемента кортежа shape
 
-start_row = int(height*.25)
-start_col = int(width*.25)
+start_row = int(height * 0.25)  # int - приведение float к int с округлением в нижную сторону
+start_col = int(width * 0.25)
 
-end_row = int(height*.80)
-end_col = int(width*.80)
+end_row = int(height * 0.80)
+end_col = int(width * 0.80)
 
 cropped = image[start_row:end_row, start_col:end_col]
 
 cv2.imshow("original_image", image)
-cv2.waitKey(0)
+cv2.waitKey()
 cv2.imshow("cropped", cropped)
-cv2.waitKey(0)
+cv2.waitKey()
 cv2.destroyAllWindows()

@@ -1,6 +1,6 @@
 import cv2
 
-input_ = cv2.imread("image.jpg")
+input_ = cv2.imread("./image.jpg")
 cv2.imshow("Hello World", input_)
 cv2.waitKey()
 cv2.destroyAllWindows()
