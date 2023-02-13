@@ -13,6 +13,7 @@ cropped = image[start_row:end_row, start_col:end_col]
 
 cv2.imshow("original_image", image)
 cv2.waitKey()
+
 cv2.imshow("cropped", cropped)
 cv2.waitKey()
 cv2.destroyAllWindows()
