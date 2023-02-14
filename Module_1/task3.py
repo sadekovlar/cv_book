@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-image = cv2.imread('images/input.jpg')
+image = cv2.imread('image.jpg')
 height, width = image.shape[:2]
 
 start_row = int(height*.25)
