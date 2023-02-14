@@ -14,19 +14,27 @@ cv2.imshow('added', image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
-subtracted = cv2.subtract(M, image)
-M = np.ones(image.shape, dtype = "uint8") * 100
-red = np.dot(M, [
-    [0, 0, 1],
+swap =np.array([
     [0, 1, 0],
-    [1, 0, 0],
-])
-some = image.dot(    
-    np.array([[0, 0, 1],
-    [1, 0, 0],
-    [0, 1, 0]], dtype="uint8")
-)
+    [0, 0, 1],
+    [1, 0, 0]
+], dtype="uint8")
 
-cv2.imshow('weird', some)
+#lets swap colors!
+weird_violet = image.dot(swap)
+cv2.imshow('weird_violet', weird_violet)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
+#and another way
+weird_acid_blue = weird_violet.dot(swap)
+cv2.imshow('weird_acid_blue', weird_acid_blue)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+#third time
+normal = weird_acid_blue.dot(swap)
+cv2.imshow('normal', normal)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
