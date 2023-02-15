@@ -1,7 +1,8 @@
-import numpy as np
-import cv2
 import os
-import sys
+
+import cv2
+import numpy as np
+
 from srccam.season_reader import SeasonReader
 
 
@@ -22,7 +23,7 @@ class BirdsView(SeasonReader):
             self.height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         self.set_params()
         self.matrix = cv2.getPerspectiveTransform(self.corner_points_array, self.img_params)
-        print(self.width, ' ', self.height)
+        print(self.width, " ", self.height)
         return True
 
     def on_shot(self):
@@ -37,7 +38,7 @@ class BirdsView(SeasonReader):
         bv = cv2.resize(bv, dim)
         x_offset = 5
         y_offset = 5
-        self.frame[y_offset:y_offset + bv.shape[0], x_offset:x_offset + bv.shape[1]] = bv
+        self.frame[y_offset : y_offset + bv.shape[0], x_offset : x_offset + bv.shape[1]] = bv
         return True
 
     def on_gps_frame(self) -> bool:
@@ -58,9 +59,7 @@ class BirdsView(SeasonReader):
 
 if __name__ == "__main__":
     for number in range(235, 236):
-        init_args = {
-            'path_to_data_root': './data/tram/'
-        }
+        init_args = {"path_to_data_root": "./data/tram/"}
         s = BirdsView()
         s.initialize(**init_args)
         s.run()

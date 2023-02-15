@@ -1,3 +1,7 @@
+### Test files ###
+Module_1/output.*
+trial.py
+
 ### JupyterNotebooks ###
 # gitignore template for Jupyter Notebooks
 # website: http://jupyter.org/

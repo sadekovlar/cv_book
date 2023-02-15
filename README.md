@@ -2,19 +2,19 @@
 
 ## Content [in development]
 
-- Module 1 Basic image operation  
-        - Reading, writing and displaying images  
-        - Grayscaling  
-        - Cropping  
-        - Drawing images and shapes using OpenCV  
-        - Scaling, re-sizing and interpolations  
-        - Arithmetic Operations  
-        - Bitwise Operations and Masking  
-- Module 1a Camera, project and reproject points, bev transform  
-        - Translations  
-        - Rotations  
+- Module 1 Basic image operation
+        - Reading, writing and displaying images
+        - Grayscaling
+        - Cropping
+        - Drawing images and shapes using OpenCV
+        - Scaling, re-sizing and interpolations
+        - Arithmetic Operations
+        - Bitwise Operations and Masking
+- Module 1a Camera, project and reproject points, bev transform
+        - Translations
+        - Rotations
 - Module 1b Camera calibration
-- Module 2 Image preprocessing, filters, histogram (artifact correction)  
+- Module 2 Image preprocessing, filters, histogram (artifact correction)
         - ColorSpaces
 - Module 3 Edge detector
 - Module 4 Feature point, feature tracking, image comparison
@@ -39,5 +39,6 @@ opencv 3.4.9
 ## Installation
 
 ```bash
-pip install .
+cd srccam
+pip install .  # or pip3
 ```
