@@ -118,7 +118,7 @@ kernel = np.array([
 # applying the filter2D() function
 img_sobel = cv2.filter2D(src=image, ddepth=-1, kernel=kernel)
 
-cv2.imshow('Emboss filter', img_sobel)
+cv2.imshow('Sobel filter', img_sobel)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
