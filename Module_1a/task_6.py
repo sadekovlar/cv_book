@@ -4,7 +4,7 @@ import requests
 import cv2
 
 from srccam.season_reader import SeasonReader
-from srccam.src.sence_data import SenseData
+from srccam.sense_data import SenseData
 
 DISPLAY_SPEC = {
     'font': cv2.FONT_HERSHEY_PLAIN,
@@ -27,7 +27,7 @@ class Telemetry(SeasonReader):
 
     def on_init(self, _addMapOnFrame=True, _addLogoOnFrame=True):
         # Сразу загружаем logo
-        self._logo_img = cv2.imread('./Module_I/src/img/logo_misis_en_small.jpg', cv2.IMREAD_COLOR)
+        self._logo_img = cv2.imread('./Module_1a/img/logo_misis_en_small.jpg', cv2.IMREAD_COLOR)
         self._addMapOnFrame = _addMapOnFrame
         self._addLogoOnFrame = _addLogoOnFrame
         return True
@@ -39,7 +39,7 @@ class Telemetry(SeasonReader):
         request = request + '&pt=' + str(self._currentSenceData._east) + ',' + str(
             self._currentSenceData._nord) + ',round'  # add marker
 
-        with open('./Module_I/src/img/map.jpg', 'wb') as handle:
+        with open('./Module_1a/img/map.jpg', 'wb') as handle:
             response = requests.get(request, stream=True)
             if not response.ok:
                 print(response)
@@ -47,7 +47,7 @@ class Telemetry(SeasonReader):
                 if not block:
                     break
                 handle.write(block)
-        self._map_img = cv2.imread('./Module_I/src/img/map.jpg', cv2.IMREAD_COLOR)
+        self._map_img = cv2.imread('./Module_1a/img/map.jpg', cv2.IMREAD_COLOR)
 
     def put_map_on_frame(self):
         m_rows, m_cols, _ = self._map_img.shape
@@ -125,7 +125,7 @@ class Telemetry(SeasonReader):
 
 if __name__ == "__main__":
     init_args = {
-        'path_to_data_root': './data/tram/'
+        'path_to_data_root': '../data/city/'
     }
     s = Telemetry()
     s.initialize(**init_args)

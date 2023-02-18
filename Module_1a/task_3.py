@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from srccam.load_calib import CalibReader
-from season_reader import SeasonReader
+from srccam.season_reader import SeasonReader
 from srccam.calib import Calib
 from srccam.camera import Camera
 from srccam.point import Point3d as Point
@@ -21,7 +21,7 @@ class Reader(SeasonReader):
         par = ['K', 'D', 'r', 't']
         calib_reader = CalibReader()
         calib_reader.initialize(
-            file_name='../data/tram/leftImage.yml',
+            file_name='../data/city/leftImage.yml',
             param=par)
         calib_dict = calib_reader.read()
         calib = Calib(calib_dict)
@@ -60,7 +60,7 @@ class Reader(SeasonReader):
 
 if __name__ == '__main__':
     init_args = {
-        'path_to_data_root': '../data/tram/'
+        'path_to_data_root': '../data/city/'
     }
     s = Reader()
     s.initialize(**init_args)
