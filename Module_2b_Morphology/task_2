@@ -1,0 +1,24 @@
+import numpy as np
+import cv2
+
+img = cv2.imread("C:/Users/22354/Downloads/picture.jpg")
+
+
+#Gaussian blur is the result of blurring an image by a Gaussian function
+#It is a widely used effect in graphics software, typically to reduce image noise and reduce detail
+img_blurred = cv2.GaussianBlur(img, (19,19), 0)
+cv2.imshow("image blurred", img_blurred)
+cv2.waitKey(0)
+
+#The Median Filter is a non-linear digital filtering technique, often used to remove noise from an image 
+img_blurred = cv2.medianBlur(img, 19)
+cv2.imshow("image blurred", img_blurred)
+cv2.waitKey(0)
+
+
+# Bilateral Filter preserves angles and reduces noise
+img_blurred = cv2.bilateralFilter(img, 19,19,19)
+cv2.imshow("image blurred", img_blurred)
+cv2.waitKey(0)
+
+cv2.destroyAllWindows()

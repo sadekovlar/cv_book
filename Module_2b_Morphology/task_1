@@ -1,0 +1,45 @@
+import numpy as np
+import cv2
+
+img = cv2.imread("C:/Users/22354/Downloads/picture.jpg")
+
+# The function accepts only gray images
+gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+# cv2.threshold(source, thresholdValue, maxVal, thresholdingTechnique) 
+# source - our image
+# thresholdValue - the border of pixels, what is larger is replaced by 255, what is lower by 130
+# maxVal - maximum value that can be assigned to a pixel
+# thresholdingTechnique - the type of thresholding to be applied, or minimal value
+ret, img_threshold = cv2.threshold(gray_image, 110, 255, 130)
+print(ret)
+cv2.imshow("image gray", img_threshold)
+cv2.waitKey(0)
+
+# If pixel intensity is greater than the set threshold, value set to 255, else set to 0 (black).
+ret, img_threshold = cv2.threshold(gray_image, 110, 255, cv2.THRESH_BINARY)
+cv2.imshow("image gray", img_threshold)
+cv2.waitKey(0)
+
+# Inverted case of cv2.THRESH_BINARY.
+ret, img_threshold = cv2.threshold(gray_image, 110, 255, cv2.THRESH_BINARY_INV)
+cv2.imshow("image gray", img_threshold)
+cv2.waitKey(0)
+
+# If pixel intensity value is greater than threshold, it is truncated to the threshold.
+# The pixel values are set to be the same as the threshold. All other values remain the same
+ret, img_threshold  = cv2.threshold(gray_image,40,255, cv2.THRESH_TRUNC )
+cv2.imshow("image gray", img_threshold)
+cv2.waitKey(0)
+
+
+#Pixel intensity is set to 0, for all the pixels intensity, less than the threshold value.
+ret, img_threshold  = cv2.threshold(gray_image,40,255, cv2.THRESH_TOZERO )
+cv2.imshow("image gray", img_threshold)
+cv2.waitKey(0)
+
+#Inverted  case of cv2.THRESH_TOZERO.
+ret, img_threshold  = cv2.threshold(gray_image,40,255, cv2.THRESH_TOZERO_INV )
+cv2.imshow("image gray", img_threshold)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
