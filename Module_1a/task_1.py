@@ -40,7 +40,7 @@ class Reader(SeasonReader):
         par = ['K', 'D', 'r', 't']
         calib_reader = CalibReader()
         calib_reader.initialize(
-            file_name='../data/tram/leftImage.yml',
+            file_name='../data/city/leftImage.yml',
             param=par)
         calib_dict = calib_reader.read()
         self.way_estimator = WayEstimator(calib_dict, 10)
@@ -67,7 +67,7 @@ class Reader(SeasonReader):
 
 if __name__ == '__main__':
     init_args = {
-        'path_to_data_root': '../data/tram/'
+        'path_to_data_root': '../data/city/'
     }
     s = Reader()
     s.initialize(**init_args)
