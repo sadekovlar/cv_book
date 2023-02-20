@@ -13,38 +13,33 @@ import numpy as np
 
 from srccam import CalibReader, Calib, Camera, SeasonReader, Point3d as Point
 
-
+# пути к архивам с данными
 DATA_PATHS = ['../data/city/trm.169.007.info.yml.gz',
               '../data/city/trm.169.008.info.yml.gz']
+
 GPS_TAG = 'emlidLeft'
 
 RED = (0, 0, 255)
 
 
 def get_gps_data(file_paths: list) -> list:
-    """Получение информации пути трамвая."""
+    """Получение информации о пути трамвая из архивов с данными."""
 
     data = []
     for file_path in file_paths:
         if not os.path.isfile(file_path):
             raise FileNotFoundError('File {} not found.'.format(file_path))
 
-        try:
-            with gzip.open(file_path, 'rt') as file:
-                file.readline()
-                file = file.read()
-                file = file.replace(':', ': ')
-                yml = yaml.load(file, Loader=Loader)
-                for shot in yml['shots']:
-                    if GPS_TAG in shot:
-                        sense_data = shot[GPS_TAG]['senseData']
-                        data.append({'nord': sense_data['nord'],
-                                     'east': sense_data['east'],
-                                     'yaw': sense_data['yaw']})
-
-        except Exception as e:
-            print('Error while reading file {}: {}.'.format(file_path, e))
-            raise
+        with gzip.open(file_path, 'rt') as file:
+            file.readline()
+            file = file.read()
+            file = file.replace(':', ': ')
+            yml = yaml.load(file, Loader=Loader)
+            for shot in yml['shots']:
+                if GPS_TAG in shot:
+                    sense_data = shot[GPS_TAG]['senseData']
+                    data.append({'nord': sense_data['nord'],
+                                 'east': sense_data['east']})
 
     return data
 
@@ -70,7 +65,7 @@ def get_dist_and_angle(lat1: float, long1: float, lat2: float, long2: float) -> 
     c_delta = math.cos(delta)
     s_delta = math.sin(delta)
 
-    # Вычисление длины большого круга
+    # Вычисление расстояния между точками
     y = math.sqrt(math.pow(cl2 * s_delta, 2) + math.pow(cl1 * sl2 - sl1 * cl2 * c_delta, 2))
     x = sl1 * sl2 + cl1 * cl2 * c_delta
     ad = math.atan2(y, x)
@@ -87,7 +82,6 @@ def get_dist_and_angle(lat1: float, long1: float, lat2: float, long2: float) -> 
     z2 = (z + 180) % 360 - 180
     z2 = - math.radians(z2)
     angle_rad = z2 - ((2 * math.pi) * math.floor((z2 / (2 * math.pi))))
-    # angle_deg = (angle_rad * 180) / math.pi
 
     return dist, angle_rad
 
@@ -95,28 +89,39 @@ def get_dist_and_angle(lat1: float, long1: float, lat2: float, long2: float) -> 
 class PathCreator:
     """Вычисление и отображение пути следования трамвая из данных GPS."""
 
-    POINT_CNT = 10
-    COLOR = RED
-    LINE_WIDTH = 10
+    POINT_CNT = 50    # количество точек для отрисовки
+    COLOR = RED       # цвет линий
+    LINE_WIDTH = 8    # толщина линий
 
-    def __init__(self, calib):
+    def __init__(self, calib) -> None:
         self.camera = Camera(calib)
+
+        # данные GPS
         self.data = get_gps_data(DATA_PATHS)
+
+        # расстояния и азимуты для соседних точек пути
         self.dists, self.angles = np.zeros(len(self.data) - 1), np.zeros(len(self.data) - 1)
+
+        # перевод сырых данных в расстояния и углы между соседними точками
         self.process_data()
+
+        # угол, на который в данный момент повёрнут сам трамвай
+        self.zero_angle = 0
+
         # индекс текущей точки пути
         self.current_index = 0
+
         # текущий участок пути
         self.path = [(self.dists[i], self.angles[i]) for i in range(self.POINT_CNT)]
 
-    def process_data(self):
+    def process_data(self) -> None:
         """Нахождение расстояний и углов для всех известных точек."""
 
         for i in range(len(self.data) - 1):
             p1, p2 = self.data[i], self.data[i + 1]
             self.dists[i], self.angles[i] = get_dist_and_angle(p1['nord'], p1['east'], p2['nord'], p2['east'])
 
-    def next_point(self):
+    def next_point(self) -> None:
         """Добавление следующей точки в маршрут."""
 
         self.current_index += 1
@@ -127,30 +132,40 @@ class PathCreator:
         else:
             self.path.append(self.path[-1])
 
-    def render_path(self, frame):
+    def render_path(self, frame) -> None:
         """Отображение пути на экране."""
+        # TODO: optimize rendering
 
+        # точки в 3D-пространстве
         points_3d = [Point((0, 0, 0))]
 
-        # TODO: calculate positions and add points
-        for (dist, angle) in self.path:
-            pass
-            points_3d.append(Point((0, 10, 0)))
+        # вычисление текущего угла поворота трамвая
+        self.zero_angle = 0
+        for i in range(5):
+            index = max(self.current_index + i - 20, 0)
+            self.zero_angle += self.angles[index]
+        self.zero_angle /= 5
 
+        # вычисление точек в 3D-пространстве для отрисовки пути
+        x, y = 0, 0
+        for (dist, angle) in self.path:
+            angle -= self.zero_angle
+            x += dist * math.sin(angle)
+            y += dist * math.cos(angle)
+            points_3d.append(Point((x, y, 0)))
+
+        # перевод точек в 2D-пространство
         points_2d = [self.camera.project_point_3d_to_2d(point) for point in points_3d]
 
+        # отрисовка пути
         for i in range(len(points_2d) - 1):
             cv2.line(frame, points_2d[i], points_2d[i + 1], self.COLOR, self.LINE_WIDTH)
-
-
-# X2:=L*sin((U*PI)/180)+X;
-# Y2:=L*cos((U*PI)/180)+Y;
 
 
 class PathPredictor(SeasonReader):
     """Обработка видеопотока."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.path_creator = None
 
     def on_init(self) -> bool:
@@ -180,4 +195,6 @@ class PathPredictor(SeasonReader):
 if __name__ == '__main__':
     predictor = PathPredictor()
     predictor.initialize(path_to_data_root='../data/city/')
+    # TODO: prevent crashing
     predictor.run()
+    print('Done!')
