@@ -47,16 +47,16 @@ def get_gps_data(file_paths: list) -> list:
 def get_dist_and_angle(lat1: float, long1: float, lat2: float, long2: float) -> (float, float):
     """Вычисление расстояния между точками и начального азимута по их координатам."""
 
-    # Радиус Земли
+    # радиус Земли
     rad = 6372795
 
-    # Перевод координат в радианы
+    # перевод координат в радианы
     lat1 = lat1 * math.pi / 180
     lat2 = lat2 * math.pi / 180
     long1 = long1 * math.pi / 180
     long2 = long2 * math.pi / 180
 
-    # Косинусы и синусы широт и разницы долгот
+    # косинусы и синусы широт и разницы долгот
     cl1 = math.cos(lat1)
     cl2 = math.cos(lat2)
     sl1 = math.sin(lat1)
@@ -65,13 +65,13 @@ def get_dist_and_angle(lat1: float, long1: float, lat2: float, long2: float) -> 
     c_delta = math.cos(delta)
     s_delta = math.sin(delta)
 
-    # Вычисление расстояния между точками
+    # вычисление расстояния между точками
     y = math.sqrt(math.pow(cl2 * s_delta, 2) + math.pow(cl1 * sl2 - sl1 * cl2 * c_delta, 2))
     x = sl1 * sl2 + cl1 * cl2 * c_delta
     ad = math.atan2(y, x)
     dist = ad * rad
 
-    # Вычисление начального азимута
+    # вычисление начального азимута
     x = (cl1 * sl2) - (sl1 * cl2 * c_delta)
     y = s_delta * cl2
     z = math.degrees(math.atan(-y / x))
@@ -114,6 +114,9 @@ class PathCreator:
         # текущий участок пути
         self.path = [(self.dists[i], self.angles[i]) for i in range(self.POINT_CNT)]
 
+        # точки в 2D-пространстве для отрисовки пути
+        self.points_2d = None
+
     def process_data(self) -> None:
         """Нахождение расстояний и углов для всех известных точек."""
 
@@ -126,40 +129,40 @@ class PathCreator:
 
         self.current_index += 1
         self.path = self.path[1:]
-        point_index = self.current_index + self.POINT_CNT
-        if point_index < len(self.dists):
-            self.path.append((self.dists[point_index], self.angles[point_index]))
-        else:
-            self.path.append(self.path[-1])
+        point_index = min(self.current_index + self.POINT_CNT, len(self.dists) - 1)
+        self.path.append((self.dists[point_index], self.angles[point_index]))
+        self.points_2d = None
 
     def render_path(self, frame) -> None:
         """Отображение пути на экране."""
-        # TODO: optimize rendering
 
-        # точки в 3D-пространстве
-        points_3d = [Point((0, 0, 0))]
+        if not self.points_2d:  # если предыдущий рассчитанный путь устарел
+            # точки в 3D-пространстве
+            points_3d = [Point((0, 0, 0))]
 
-        # вычисление текущего угла поворота трамвая
-        self.zero_angle = 0
-        for i in range(5):
-            index = max(self.current_index + i - 20, 0)
-            self.zero_angle += self.angles[index]
-        self.zero_angle /= 5
+            # вычисление текущего угла поворота трамвая
+            self.zero_angle = 0
+            for i in range(5):
+                index = max(self.current_index + i - 20, 0)
+                self.zero_angle += self.angles[index]
+            self.zero_angle /= 5
+            # угол поворота трамвая определяется как среднее арифметическое
+            # из углов поворота на нескольких предыдущих отрезках пути
 
-        # вычисление точек в 3D-пространстве для отрисовки пути
-        x, y = 0, 0
-        for (dist, angle) in self.path:
-            angle -= self.zero_angle
-            x += dist * math.sin(angle)
-            y += dist * math.cos(angle)
-            points_3d.append(Point((x, y, 0)))
+            # вычисление точек в 3D-пространстве для отрисовки пути
+            x, y = 0, 0
+            for (dist, angle) in self.path:
+                angle -= self.zero_angle
+                x += dist * math.sin(angle)
+                y += dist * math.cos(angle)
+                points_3d.append(Point((x, y, 0)))
 
-        # перевод точек в 2D-пространство
-        points_2d = [self.camera.project_point_3d_to_2d(point) for point in points_3d]
+            # перевод точек в 2D-пространство
+            self.points_2d = [self.camera.project_point_3d_to_2d(point) for point in points_3d]
 
         # отрисовка пути
-        for i in range(len(points_2d) - 1):
-            cv2.line(frame, points_2d[i], points_2d[i + 1], self.COLOR, self.LINE_WIDTH)
+        for i in range(len(self.points_2d) - 1):
+            cv2.line(frame, self.points_2d[i], self.points_2d[i + 1], self.COLOR, self.LINE_WIDTH)
 
 
 class PathPredictor(SeasonReader):
@@ -195,6 +198,8 @@ class PathPredictor(SeasonReader):
 if __name__ == '__main__':
     predictor = PathPredictor()
     predictor.initialize(path_to_data_root='../data/city/')
-    # TODO: prevent crashing
-    predictor.run()
+    try:
+        predictor.run()
+    except FileNotFoundError as e:
+        print('FileNotFoundError: {}.'.format(e))
     print('Done!')
