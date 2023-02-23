@@ -72,16 +72,9 @@ def get_dist_and_angle(lat1: float, long1: float, lat2: float, long2: float) -> 
     dist = ad * rad
 
     # вычисление начального азимута
-    x = (cl1 * sl2) - (sl1 * cl2 * c_delta)
     y = s_delta * cl2
-    z = math.degrees(math.atan(-y / x))
-
-    if x < 0:
-        z = z + 180
-
-    z2 = (z + 180) % 360 - 180
-    z2 = - math.radians(z2)
-    angle_rad = z2 - ((2 * math.pi) * math.floor((z2 / (2 * math.pi))))
+    x = (cl1 * sl2) - (sl1 * cl2 * c_delta)
+    angle_rad = math.atan2(y, x)
 
     return dist, angle_rad
 
