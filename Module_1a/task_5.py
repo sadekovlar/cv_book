@@ -91,7 +91,7 @@ class PathCreator:
 
     POINT_CNT = 50    # количество точек для отрисовки
     COLOR = RED       # цвет линий
-    LINE_WIDTH = 8    # толщина линий
+    LINE_WIDTH = 5    # толщина линий
 
     def __init__(self, calib) -> None:
         self.camera = Camera(calib)
@@ -136,16 +136,16 @@ class PathCreator:
     def render_path(self, frame) -> None:
         """Отображение пути на экране."""
 
-        if not self.points_2d:  # если предыдущий рассчитанный путь устарел
+        if self.points_2d is None:  # если предыдущего рассчитанного пути не существует, или он устарел
             # точки в 3D-пространстве
             points_3d = [Point((0, 0, 0))]
 
             # вычисление текущего угла поворота трамвая
             self.zero_angle = 0
-            for i in range(5):
-                index = max(self.current_index + i - 20, 0)
+            for i in range(10):
+                index = max(self.current_index + i - 24, 0)
                 self.zero_angle += self.angles[index]
-            self.zero_angle /= 5
+            self.zero_angle /= 10
             # угол поворота трамвая определяется как среднее арифметическое
             # из углов поворота на нескольких предыдущих отрезках пути
 
@@ -158,11 +158,10 @@ class PathCreator:
                 points_3d.append(Point((x, y, 0)))
 
             # перевод точек в 2D-пространство
-            self.points_2d = [self.camera.project_point_3d_to_2d(point) for point in points_3d]
+            self.points_2d = np.array([self.camera.project_point_3d_to_2d(point) for point in points_3d], np.int32)
 
         # отрисовка пути
-        for i in range(len(self.points_2d) - 1):
-            cv2.line(frame, self.points_2d[i], self.points_2d[i + 1], self.COLOR, self.LINE_WIDTH)
+        cv2.polylines(frame, [self.points_2d], False, self.COLOR, self.LINE_WIDTH, cv2.LINE_AA)
 
 
 class PathPredictor(SeasonReader):
