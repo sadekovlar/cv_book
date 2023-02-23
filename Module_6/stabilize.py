@@ -23,7 +23,7 @@ while(cap.isOpened()):
     prev_corner = cv2.goodFeaturesToTrack(frames[-1], 200, 0.0001, 10);
     cur_corner, status, _ = cv2.calcOpticalFlowPyrLK(frames[-1], current, prev_corner, np.array([]))
     prev_corner, cur_corner = map(lambda corners: corners[status.ravel().astype(bool)], [prev_corner, cur_corner])
-    transform,_ = cv2.estimateAffine2D(prev_corner, cur_corner, True)
+    transform, _ = cv2.estimateAffine2D(prev_corner, cur_corner, True)
     if transform is not None:
         transform = np.append(transform, [[0, 0, 1]], axis=0)
     if transform is None:
@@ -44,10 +44,10 @@ for frame, transform, index in zip(frames, transforms, range(len(frames))):
     inverse_transform = cv2.invertAffineTransform(transform[:2])
     stabilized_frames.append(cv2.warpAffine(frame, inverse_transform, (width, height)))
 
-writer = cv2.VideoWriter(folder_template.format('output.avi'), 
-                         0, 
+writer = cv2.VideoWriter(folder_template.format('output.mp4'), 
+                         cv2.VideoWriter_fourcc('m', 'p', '4', 'v'), 
                          20.0, (width*2, height), False)
 for frame, stabilized in zip(frames, stabilized_frames):
-    writer.write(np.concatenate([stabilized, frame], axis=1))
+    writer.write(np.concatenate([frame, stabilized], axis=1))
 writer.release()
 print("done!")

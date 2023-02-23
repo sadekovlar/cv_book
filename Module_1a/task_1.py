@@ -19,10 +19,10 @@ class WayEstimator:
     def __init__(self, calib_dict: dict, ways_length: int):
         self.calib = Calib(calib_dict)
         self.camera = Camera(self.calib)
-        self.left_3d_near = Point((-1.8, 5.0, 0))
-        self.left_3d_far = Point((-1.8, ways_length, 0))
-        self.right_3d_near = Point((1.8, 5.0, 0))
-        self.right_3d_far = Point((1.8, ways_length, 0))
+        self.left_3d_near = Point((-0.76, 5.0, 0))
+        self.left_3d_far = Point((-0.76, ways_length, 0))
+        self.right_3d_near = Point((0.76, 5.0, 0))
+        self.right_3d_far = Point((0.76, ways_length, 0))
 
     def draw_way(self, img: np.array):
         left_2d_near = self.camera.project_point_3d_to_2d(self.left_3d_near)
