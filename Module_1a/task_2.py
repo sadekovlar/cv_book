@@ -17,7 +17,7 @@ class ObjectOnWaysEstimator:
     """
     Задаем калиб, высоту, ширину, глубину параллелограмма и расстояние от камеры.
     """
-    def __init__(self, calib_dict: dict(), height, width, length, depth: int):
+    def __init__(self, calib_dict: dict, height, width, length, depth: int):
         self.calib = Calib(calib_dict)
         self.camera = Camera(self.calib)
         self.points_3d = self.get_cube_vertices(height, width, length, depth)
