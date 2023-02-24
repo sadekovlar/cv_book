@@ -36,7 +36,7 @@
 - Module 4b Feature tracking, image comparison  
         - RANSAC  
         - NN  
-- Module 4a Area detector. Segmentattion mapping  
+- Module 4c Area detector. Segmentattion mapping  
         - Graph base segmentation    
 - Module 5 Hough Detector for camera calibration  
         - Line Extract  
