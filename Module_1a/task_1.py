@@ -6,13 +6,11 @@ from srccam.calib import Calib
 from srccam.camera import Camera
 from srccam.point import Point3d as Point
 
-
 BLACK = (0, 0, 0)
 BLUE = (255, 0, 0)
 GREEN = (0, 255, 0)
 RED = (0, 0, 255)
 LINE_WIDTH = 5
-
 
 class WayEstimator:
     """Класс для построения процекции пути движения ТС."""
