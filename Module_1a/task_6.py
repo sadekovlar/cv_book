@@ -16,8 +16,8 @@ DISPLAY_SPEC = {
 
 # Добавление на кадр информации об телеметрии
 class Telemetry(SeasonReader):
-    FUSTY_COUNT = 30  # после 30 кадров SenceData усторевает и уже не выводится
-    _currentSenceData: SenseData
+    FUSTY_COUNT = 30  # после 30 кадров SenseData устаревает и уже не выводится
+    _currentSenseData: SenseData
     _actualityDataCount: int = 31  # Отслеживает, если данные устарели, то мы их не выводим
     _addMapOnFrame: bool = True
     _addLogoOnFrame: bool = True
@@ -34,10 +34,10 @@ class Telemetry(SeasonReader):
 
     def upload_new_map(self):
         # https://yandex.ru/dev/maps/staticapi/doc/1.x/dg/concepts/input_params.html
-        request = 'https://static-maps.yandex.ru/1.x/?ll=' + str(self._currentSenceData._east) + ',' + str(
-            self._currentSenceData._nord) + '&size=150,150&z=19&l=map'
-        request = request + '&pt=' + str(self._currentSenceData._east) + ',' + str(
-            self._currentSenceData._nord) + ',round'  # add marker
+        request = 'https://static-maps.yandex.ru/1.x/?ll=' + str(self._currentSenseData._east) + ',' + str(
+            self._currentSenseData._nord) + '&size=150,150&z=19&l=map'
+        request = request + '&pt=' + str(self._currentSenseData._east) + ',' + str(
+            self._currentSenseData._nord) + ',round'  # add marker
 
         with open('./Module_1a/img/map.jpg', 'wb') as handle:
             response = requests.get(request, stream=True)
@@ -56,11 +56,11 @@ class Telemetry(SeasonReader):
         dst = cv2.addWeighted(roi, 1, self._map_img, 0.5, 0)
         self.frame[rows - m_rows:rows, cols - m_cols:cols] = dst
 
-    def put_sence_data(self):
+    def put_sense_data(self):
         if self._actualityDataCount > self.FUSTY_COUNT:
             return 0
         # Вывод скорости
-        sd = self._currentSenceData
+        sd = self._currentSenseData
         speed_mc = round(sd._speed, 3)
         speed_kh = sd.ms2kmh()
         cv2.putText(self.frame, f"Speed: {speed_kh} km/h ({speed_mc} m/s)", (15, 450),
@@ -74,10 +74,10 @@ class Telemetry(SeasonReader):
         cv2.putText(self.frame, f"East: {east_str}", (630, 500),
                     DISPLAY_SPEC['font'], DISPLAY_SPEC['scale'], DISPLAY_SPEC['color'], DISPLAY_SPEC['thickness'])
         # Добавление карты
-        if (self._addMapOnFrame):
+        if self._addMapOnFrame:
             self.put_map_on_frame()
 
-        # Вывод компасса
+        # Вывод компаса
         # радиус компаса в пикселях
         r = 25
         # положение в кадре
@@ -87,7 +87,7 @@ class Telemetry(SeasonReader):
         cv2.putText(self.frame, f"N: {int(sd.rad2deg())}", (x1 - 55, y1 + 4),
                     DISPLAY_SPEC['font'], DISPLAY_SPEC['scale'], DISPLAY_SPEC['color'], DISPLAY_SPEC['thickness'])
         cv2.circle(self.frame, (x0, y0), r + 3, (0, 0, 0), 1)
-        # Вывод маркера времени получения SenceData
+        # Вывод маркера времени получения SenseData
         # cv2.putText(self.frame, f"{sd._timestamp}", (15, 420),
         #           DISPLAY_SPEC['font'], DISPLAY_SPEC['scale'],DISPLAY_SPEC['color'],DISPLAY_SPEC['thickness'])
         pass
@@ -103,12 +103,12 @@ class Telemetry(SeasonReader):
     def on_frame(self):
         if self._addLogoOnFrame:
             self.put_misis_logo()
-        self.put_sence_data()
+        self.put_sense_data()
         return True
 
     def on_gps_frame(self):
         # Загрузка данных
-        self._currentSenceData = SenseData(self.shot[self._gps_name])
+        self._currentSenseData = SenseData(self.shot[self._gps_name])
         self._actualityDataCount = 1
         # Загрузка карты
         if self._addMapOnFrame:
