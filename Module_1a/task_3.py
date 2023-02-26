@@ -14,6 +14,7 @@ GREEN = (0, 255, 0)
 RED = (0, 0, 255)
 LINE_WIDTH = 5
 
+
 class Reader(SeasonReader):
     """Обработка видеопотока."""
     def on_init(self, _file_name: str = None):
@@ -35,7 +36,6 @@ class Reader(SeasonReader):
         return True
 
     def on_frame(self):
-        self.myParall1
         cv2.putText(self.frame, f'GrabMsec: {self.frame_grab_msec}', (15, 50),
                     cv2.FONT_HERSHEY_PLAIN, 1.0, (0, 255, 0), 2)
         # Устанавливаем повороты для фигур:
