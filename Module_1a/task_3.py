@@ -40,8 +40,8 @@ class Reader(SeasonReader):
                     cv2.FONT_HERSHEY_PLAIN, 1.0, (0, 255, 0), 2)
         # Устанавливаем повороты для фигур:
         self.myCube.add_rotation( np.array([0.0,0.01,0.0]) )
-        # self.myParall1.add_rotation( np.array([0.02,0.0,0.00]) )
-        # self.myParall2.add_rotation( np.array([0.0,0.0,0.05]) )
+        self.myParall1.add_rotation( np.array([0.02,0.0,0.00]) )
+        self.myParall2.add_rotation( np.array([0.0,0.0,0.05]) )
         # Отрисовка созданных фигур:
         self.myCube.draw(self.frame, self.camera)
         self.myParall1.draw(self.frame, self.camera, drawVertex=False)
