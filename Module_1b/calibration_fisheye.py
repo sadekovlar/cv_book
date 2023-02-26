@@ -62,7 +62,7 @@ print("K=np.array(" + str(K.tolist()) + ")")
 print("D=np.array(" + str(D.tolist()) + ")")
 
 h, w = img.shape[:2]
-new_K = cv2.fisheye.estimateNewCameraMatrixForUndistortRectify(K, D, (w, h), np.eye(3), balance=0)
+new_K = cv2.fisheye.estimateNewCameraMatrixForUndistortRectify(K, D, (w, h), np.eye(3), balance=1)
 undistorted_image = cv2.undistort(
     img, K, D, None, new_K
 )

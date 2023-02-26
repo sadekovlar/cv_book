@@ -66,7 +66,7 @@ image = images[0]
 map1, map2 = cv2.initUndistortRectifyMap(mtx, dist, np.eye(3), mtx, (w, h), cv2.CV_16SC2)
 undistorted_img = cv2.remap(image, map1, map2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
 
-newCameraMatrix, validPixROI = cv2.getOptimalNewCameraMatrix(mtx, dist,(w, h),0, (w, h))
+newCameraMatrix, validPixROI = cv2.getOptimalNewCameraMatrix(mtx, dist,(w, h), 1, (w, h))
 undistorted_image = cv2.undistort(
     image, mtx, dist, None, newCameraMatrix
 )
