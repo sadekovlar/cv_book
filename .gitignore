@@ -1,6 +1,12 @@
+### Data files ###
+data/*
+
 ### Test files ###
 Module_1/output.*
 trial.py
+
+### VS Code ###
+*.code-workspace
 
 ### JupyterNotebooks ###
 # gitignore template for Jupyter Notebooks
@@ -343,3 +349,4 @@ cython_debug/
 
 # Support for Project snippet scope
 .vscode/*.code-snippets
+.vscode/settings.json
