@@ -1,6 +1,6 @@
 import cv2
 
-image = cv2.imread("./image.jpg")
+image = cv2.imread("./Module_1/img/image.jpg")
 b, g, r = cv2.split(image)  # получаем каналы для Blue, Green и Red
 
 cv2.imshow("original", image)

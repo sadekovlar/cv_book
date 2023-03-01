@@ -1,7 +1,7 @@
 import cv2
 
 # Load our input image
-image = cv2.imread("./image.jpg")
+image = cv2.imread("./Module_1/img/image.jpg")
 cv2.imshow("Original", image)
 cv2.waitKey()
 
@@ -13,9 +13,9 @@ cv2.waitKey()
 cv2.destroyAllWindows()
 
 
-# Another method faster method
+# Another faster method
 # The third argument of 0 makes it greyscale
-img = cv2.imread("./image.jpg", 0)
+img = cv2.imread("./Module_1/img/image.jpg", 0)
 
 cv2.imshow("Grayscale", img)
 cv2.waitKey()
