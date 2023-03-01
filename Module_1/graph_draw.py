@@ -68,17 +68,22 @@ class Plotter:
 def func1(x):
     return 3 * np.sin(x) / x
 
+
 def func2(x):
     return 0.1 * x ** 4 - 1.5 * x ** 2 + 3
+
 
 def hyperbole(x):
     return 5 / x
 
+
 def sign(x):
     return 0 if x == 0 else x / abs(x)
 
+
 def sqrt(x):
     return np.sqrt(5 - x)
+
 
 def fence(x):
     return np.arctan(10 ** 10 * np.sin(x + np.pi / 2))

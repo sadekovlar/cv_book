@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # If you're wondering why only two dimensions, well this is a grayscale image,
-# if we doing a colored image, we'd use
+# if we were doing a colored image, we'd use
 # rectangle = np.zeros((300, 300, 3), np.uint8)
 
 # making a square
@@ -13,7 +13,7 @@ cv2.imshow("square", square)
 
 ellipse = np.zeros((300, 300), np.uint8)
 cv2.ellipse(ellipse, center=(150, 150), axes=(150, 150), angle=30, startAngle=0, endAngle=120, color=255, thickness=-1)
-cv2.imshow("ellpise", ellipse)
+cv2.imshow("ellipse", ellipse)
 cv2.waitKey()
 cv2.destroyAllWindows()
 

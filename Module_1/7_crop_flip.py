@@ -1,9 +1,9 @@
 import cv2
 
-image = cv2.imread("./image.jpg")
+image = cv2.imread("../data/road.png")
 height, width = image.shape[:2]  # Первые 2 элемента кортежа shape
 
-start_row = int(height * 0.25)  # int - приведение float к int с округлением в нижную сторону
+start_row = int(height * 0.25)  # int - приведение float к int с округлением в нижнюю сторону
 start_col = int(width * 0.25)
 
 end_row = int(height * 0.80)

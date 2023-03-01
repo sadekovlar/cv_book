@@ -1,9 +1,9 @@
 import cv2
 
 # load our input image
-image = cv2.imread("./image.jpg")
+image = cv2.imread("../data/road.png")
 
-# Let's make our image 3/4 of it's original size
+# Let's make our image 3/4 of its original size
 image_scaled = cv2.resize(image, dsize=None, fx=0.75, fy=0.75)
 cv2.imshow("image 1", image_scaled)
 cv2.waitKey()
