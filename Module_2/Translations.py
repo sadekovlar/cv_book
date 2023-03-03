@@ -24,4 +24,4 @@ cv2.waitKey()
 cv2.destroyAllWindows()
 
 # look at T
-print (T)
+print(T)
