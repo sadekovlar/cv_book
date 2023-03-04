@@ -38,7 +38,31 @@ for path in os.listdir(DATA_DIR):
             images.append(img)
         count += 1
 
-print('Количество изображений для калибровки: {}'.format(len(images)))
+print('Number of images for calibration: {}'.format(len(images)))
+
+
+def change_order(points: np.ndarray) -> np.ndarray:
+    """Function for changing the order of detected chessboard corners."""
+
+    # coordinates of the 4 outermost corners
+    xs = sorted([points[0][0, 0], points[BOARD_DIM[0] - 1][0, 0], points[-BOARD_DIM[0]][0, 0], points[-1][0, 0]])
+    ys = sorted([points[0][0, 1], points[BOARD_DIM[0] - 1][0, 1], points[-BOARD_DIM[0]][0, 1], points[-1][0, 1]])
+
+    if xs.index(points[0][0, 0]) < 2 and ys.index(points[0][0, 1]) < 2:
+        # if no changes are required
+        return points
+
+    elif xs.index(points[BOARD_DIM[0] - 1][0, 0]) < 2 and ys.index(points[BOARD_DIM[0] - 1][0, 1]) < 2:
+        # if points are rotated clockwise
+        return np.rot90(points.reshape(BOARD_DIM[::-1] + (1, 2))).reshape((BOARD_DIM[0] * BOARD_DIM[1], 1, 2))
+
+    elif xs.index(points[-BOARD_DIM[0]][0, 0]) < 2 and ys.index(points[-BOARD_DIM[0]][0, 1]) < 2:
+        # if points are rotated counterclockwise
+        return np.rot90(points.reshape(BOARD_DIM[::-1] + (1, 2)), -1).reshape((BOARD_DIM[0] * BOARD_DIM[1], 1, 2))
+
+    # if points are reversed
+    return points[::-1, ...]
+
 
 for img in images:
     # converting the image to grayscale
@@ -52,11 +76,13 @@ for img in images:
         obj_points.append(obj_ps)
 
         # refining pixel coordinates for given 2d points
-        img_ps = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
+        img_ps = cv2.cornerSubPix(gray, np.ascontiguousarray(change_order(corners)), (11, 11), (-1, -1), criteria)
         img_points.append(img_ps)
 
 # camera calibration
+print('Calibration in progress...')
 ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(obj_points, img_points, images[0].shape[:2], None, None)
+print('Calibration complete.')
 
 # number of previous camera positions to plot
 PATH_LEN = 50
@@ -65,8 +91,7 @@ PATH_LEN = 50
 cam_positions = [[], [], []]
 
 # creating the graph for the camera position
-fig: plt.Figure = plt.figure(figsize=(4.0, 3.0))
-# fig.set_layout_engine('tight')
+fig: plt.Figure = plt.figure(figsize=(3.4, 3.0))
 ax: Axes3D = fig.add_subplot(projection='3d')
 
 # prepare the data for rendering the chessboard
@@ -90,11 +115,18 @@ for path in os.listdir(DATA_DIR):
         ret, corners = cv2.findChessboardCorners(gray, BOARD_DIM, cv2.CALIB_CB_ADAPTIVE_THRESH
                                                  + cv2.CALIB_CB_FAST_CHECK + cv2.CALIB_CB_NORMALIZE_IMAGE)
         if ret:
+            # for some reason, findChessboardCorners sometimes returns points in the wrong order
+            # this function I wrote fixes the order if necessary
+            corners = np.ascontiguousarray(change_order(corners))
+
             # refining pixel coordinates for given 2d points
             img_ps = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
 
             # calculating the pose of the chessboard
             _, rvec, tvec = cv2.solvePnP(obj_ps, img_ps, mtx, dist, flags=cv2.SOLVEPNP_ITERATIVE)
+
+            # drawing the chessboard corners
+            img = cv2.drawChessboardCorners(img, BOARD_DIM, img_ps, ret)
 
             # rotation matrix
             rot_mat = cv2.Rodrigues(rvec)[0]
@@ -121,11 +153,19 @@ for path in os.listdir(DATA_DIR):
             # making the graph have the same scale for all axes
             ax.set_box_aspect([ub - lb for lb, ub in (getattr(ax, f'get_{a}lim')() for a in 'xyz')])
 
+            ax.invert_zaxis()  # inverting the z-axis
+
             fig.canvas.draw()  # drawing the plot
             w, h = fig.canvas.get_width_height()  # getting dimensions of the plot
             # converting the graph image into a numpy array
             plot_img = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8).reshape((h, w, 3))
-            img[-plot_img.shape[0]:, -plot_img.shape[1]:, ::-1] = plot_img  # overlaying the graph on the frame
+
+            # overlaying the graph on the bottom left or the bottom right corners the frame
+            if img_ps[0][0, 0] < img.shape[1] // 2:
+                img[-plot_img.shape[0]:, -plot_img.shape[1]:, ::-1] = plot_img
+            else:
+                img[-plot_img.shape[0]:, :plot_img.shape[1], ::-1] = plot_img
+
             ax.clear()  # clearing the graph
 
         cv2.imshow('camera motion', img)
