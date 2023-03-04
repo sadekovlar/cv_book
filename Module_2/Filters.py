@@ -33,7 +33,7 @@ but instead of using a simple mean, we are now using a weighted mean,
 where neighborhood pixels that are closer to the central pixel contribute more “weight” to the average.
 """
 # Gaussian blurring
-img_blur_gauss= cv2.GaussianBlur(image,(9,9),0)
+img_blur_gauss = cv2.GaussianBlur(image, (9, 9), 0)
 
 cv2.imshow('Gauss', img_blur_gauss)
 cv2.waitKey(0)
@@ -51,7 +51,7 @@ than another statistical method, such as the average.
 """
 
 # median blurring
-img_blur_median = cv2.medianBlur(image,9)
+img_blur_median = cv2.medianBlur(image, 9)
 
 cv2.imshow('Median', img_blur_median)
 cv2.waitKey(0)
