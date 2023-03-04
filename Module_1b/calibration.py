@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 
 # Defining the dimensions of checkerboard
 CHECKERBOARD = (7, 7)
+CHECKERBOARDSIZE = 100
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 # Creating vector to store vectors of 3D points for each checkerboard image
 objpoints = []
@@ -12,7 +13,7 @@ objpoints = []
 imgpoints = []
 # Defining the world coordinates for 3D points
 objp = np.zeros((1, CHECKERBOARD[0] * CHECKERBOARD[1], 3), np.float32)
-objp[0, :, :2] = np.mgrid[0:CHECKERBOARD[0], 0:CHECKERBOARD[1]].T.reshape(-1, 2)
+objp[0, :, :2] = np.mgrid[0:CHECKERBOARD[0], 0:CHECKERBOARD[1]].T.reshape(-1, 2) * CHECKERBOARDSIZE 
 prev_img_shape = None
 # Extracting path of individual image stored in a given directory
 main_path = "../data/calib"
@@ -62,18 +63,25 @@ print(tvecs)
 
 
 image = images[0]
+map1, map2 = cv2.initUndistortRectifyMap(mtx, dist, np.eye(3), mtx, (w, h), cv2.CV_16SC2)
+undistorted_img = cv2.remap(image, map1, map2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
+
 newCameraMatrix, validPixROI = cv2.getOptimalNewCameraMatrix(mtx, dist,(w, h), 1, (w, h))
 undistorted_image = cv2.undistort(
     image, mtx, dist, None, newCameraMatrix
 )
-cv2.imshow("undistorted", undistorted_image)
+x, y, w, h = validPixROI
+cv2.rectangle(undistorted_image,(x,y),(x+w, y+h),(0,0,255),1)
+
+v = np.concatenate((image, undistorted_img, undistorted_image), axis=1)
+cv2.imshow("undistorted_remap", v)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
 
 # The distortion matrix that I vary
 # Generate Grid of Object Points
-grid_size, square_size = [20, 20], 0.2
+grid_size, square_size = [10, 10], 0.5
 object_points = np.zeros([grid_size[0] * grid_size[1], 3])
 mx, my = [(grid_size[0] - 1) * square_size / 2, (grid_size[1] - 1) * square_size / 2]
 for i in range(grid_size[0]):

@@ -5,7 +5,7 @@ image = cv2.imread('image.jpg')
 height, width = image.shape[:2]
 
 #cv2.getRotationMatrix2D(rotation_center_x, rotation_center_y, angle of rotation, scale)
-rotation_matrix = cv2.getRotationMatrix2D((width/2,height/2), 20, .9)
+rotation_matrix = cv2.getRotationMatrix2D((width/2, height/2), 20, .9)
 rotated_image = cv2.warpAffine(image, rotation_matrix, (width, height))
 
 cv2.imshow('image', rotated_image)
