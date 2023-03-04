@@ -18,10 +18,11 @@ for path in fs:
         count = count + 1
 
 CHECKERBOARD = (7, 7)
+CHECKERBOARDSIZE = 100
 subpix_criteria = (cv2.TERM_CRITERIA_EPS+cv2.TERM_CRITERIA_MAX_ITER, 30, 0.1)
 calibration_flags = cv2.fisheye.CALIB_RECOMPUTE_EXTRINSIC+cv2.fisheye.CALIB_CHECK_COND+cv2.fisheye.CALIB_FIX_SKEW
 objp = np.zeros((1, CHECKERBOARD[0]*CHECKERBOARD[1], 3), np.float32)
-objp[0, :, :2] = np.mgrid[0:CHECKERBOARD[0], 0:CHECKERBOARD[1]].T.reshape(-1, 2)
+objp[0, :, :2] = np.mgrid[0:CHECKERBOARD[0], 0:CHECKERBOARD[1]].T.reshape(-1, 2)  * CHECKERBOARDSIZE
 _img_shape = None
 # 3d point in real world space
 objpoints = []
@@ -60,11 +61,16 @@ print("DIM=" + str(_img_shape[::-1]))
 print("K=np.array(" + str(K.tolist()) + ")")
 print("D=np.array(" + str(D.tolist()) + ")")
 
-
 h, w = img.shape[:2]
+new_K = cv2.fisheye.estimateNewCameraMatrixForUndistortRectify(K, D, (w, h), np.eye(3), balance=1)
+undistorted_image = cv2.undistort(
+    img, K, D, None, new_K
+)
+
+
 map1, map2 = cv2.fisheye.initUndistortRectifyMap(K, D, np.eye(3), K, (w, h), cv2.CV_16SC2)
 undistorted_img = cv2.remap(img, map1, map2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
-v = np.concatenate((undistorted_img, img), axis=1)
+v = np.concatenate((img, undistorted_img, undistorted_image), axis=1)
 cv2.imshow("undistorted", v)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
@@ -72,7 +78,7 @@ cv2.destroyAllWindows()
 
 # The distortion matrix that I vary
 # Generate Grid of Object Points
-grid_size, square_size = [20, 20], 0.2
+grid_size, square_size = [7, 7], 0.5
 object_points = np.zeros([grid_size[0] * grid_size[1], 3])
 mx, my = [(grid_size[0] - 1) * square_size / 2, (grid_size[1] - 1) * square_size / 2]
 for i in range(grid_size[0]):

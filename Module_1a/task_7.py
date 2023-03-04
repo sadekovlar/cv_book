@@ -7,11 +7,12 @@ from srccam.season_reader import SeasonReader
 
 
 class BirdsView(SeasonReader):
-    corner_points_array = None
-    img_params = None
-    height = 0
-    width = 0
-    matrix = None
+    """Класс для обработки видео-файла, получаемого с камеры и преобразования его к виду птичьего полета"""
+    corner_points_array = None #массив углов площадки, на которой установлена камера
+    img_params = None #параметры изображения
+    height = 0 #высота кадра
+    width = 0 #ширина кадра
+    matrix = None #матрица перспективного преобразования
 
     def on_init(self):
         it = [x for x in os.listdir(self._data_path) if self._video_ext in x][0]

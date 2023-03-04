@@ -3,7 +3,6 @@ import numpy as np
 
 from srccam.load_calib import CalibReader
 from srccam.season_reader import SeasonReader
-
 from srccam.calib import Calib
 from srccam.camera import Camera
 from srccam.point import Point3d as Point
