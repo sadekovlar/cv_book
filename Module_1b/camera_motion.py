@@ -92,13 +92,17 @@ cam_positions = [[], [], []]
 
 # creating the graph for the camera position
 fig: plt.Figure = plt.figure(figsize=(3.4, 3.0))
-ax: Axes3D = fig.add_subplot(projection='3d')
+ax: Axes3D = fig.add_subplot(projection='3d', computed_zorder=False)
 
 # prepare the data for rendering the chessboard
 x = np.arange(-100, 701, 100)
 y = np.arange(-100, 701, 100)
 X, Y = np.meshgrid(x, y)
 Z = np.zeros((9, 9))
+colors = np.empty(X.shape, dtype=str)
+for y in range(len(Y)):
+    for x in range(len(X)):
+        colors[y, x] = ('w', 'k')[(x + y) % 2]
 
 for path in os.listdir(DATA_DIR):
     cap = cv2.VideoCapture(os.path.join(DATA_DIR, path))
@@ -134,6 +138,11 @@ for path in os.listdir(DATA_DIR):
             # camera position
             cam_pos = -np.matrix(rot_mat).T * np.matrix(tvec)
 
+            # calculating vectors for displaying the camera orientation
+            ox = np.matmul(rot_mat.T, np.array([300, 0, 0]))
+            oy = np.matmul(rot_mat.T, np.array([0, 300, 0]))
+            oz = np.matmul(rot_mat.T, np.array([0, 0, 300]))
+
             # adding the current position to the path
             for axis in range(3):
                 cam_positions[axis].append(cam_pos[axis, 0])
@@ -143,16 +152,24 @@ for path in os.listdir(DATA_DIR):
                 for axis in range(3):
                     cam_positions[axis] = cam_positions[axis][1:]
 
+            # current camera coordinates
+            cam_x, cam_y, cam_z = cam_pos[0, 0], cam_pos[1, 0], cam_pos[2, 0]
+
             # drawing the chessboard
-            ax.plot_surface(X, Y, Z, color='green')
+            ax.plot_surface(X, Y, Z, facecolors=colors, zorder=0)
             # drawing the camera's path
-            ax.plot(cam_positions[0], cam_positions[1], cam_positions[2], color='blue', linewidth=2)
+            ax.plot(cam_positions[0], cam_positions[1], cam_positions[2], color='deepskyblue', linewidth=2)
+            # drawing the current orientation of the camera
+            ax.plot((cam_x, cam_x + oz[0]), (cam_y, cam_y + oz[1]), (cam_z, cam_z + oz[2]), color='blue')
+            ax.plot((cam_x, cam_x + oy[0]), (cam_y, cam_y + oy[1]), (cam_z, cam_z + oy[2]), color='green')
+            ax.plot((cam_x, cam_x + ox[0]), (cam_y, cam_y + ox[1]), (cam_z, cam_z + ox[2]), color='red')
             # drawing the current position of the camera
-            ax.scatter(cam_pos[0, 0], cam_pos[1, 0], cam_pos[2, 0], color='red', linewidths=3)
+            ax.scatter(cam_x, cam_y, cam_z, color='red', linewidths=2.5, zorder=3)
 
             # making the graph have the same scale for all axes
             ax.set_box_aspect([ub - lb for lb, ub in (getattr(ax, f'get_{a}lim')() for a in 'xyz')])
 
+            ax.invert_yaxis()  # inverting the y-axis
             ax.invert_zaxis()  # inverting the z-axis
 
             fig.canvas.draw()  # drawing the plot
@@ -161,7 +178,7 @@ for path in os.listdir(DATA_DIR):
             plot_img = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8).reshape((h, w, 3))
 
             # overlaying the graph on the bottom left or the bottom right corners the frame
-            if img_ps[0][0, 0] < img.shape[1] // 2:
+            if img_ps[BOARD_DIM[0] // 2][0, 0] < img.shape[1] // 2:
                 img[-plot_img.shape[0]:, -plot_img.shape[1]:, ::-1] = plot_img
             else:
                 img[-plot_img.shape[0]:, :plot_img.shape[1], ::-1] = plot_img
