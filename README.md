@@ -61,11 +61,11 @@ python 3.9
 opencv 3.4.9
 
 ## Installation
-With make
+With Makefile
 ```bash
 make fullinstall
 ```
-With you hands
+Or manually 
 ```bash
 pip install .
 wget "https://cloclo.datacloudmail.ru/zip64/0XTDKqxs2k0wGrsITpC0yEgcMCqRb41z1p8caVEEoSRryAN7Ed1cGfp1Vs/data.zip"
