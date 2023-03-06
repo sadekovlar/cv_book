@@ -2,7 +2,8 @@ import os
 
 import cv2
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+from mpl_toolkits.mplot3d import Axes3D, proj3d
+from matplotlib.patches import FancyArrowPatch
 import numpy as np
 
 # path to the data used for calibration
@@ -104,6 +105,26 @@ for y in range(len(Y)):
     for x in range(len(X)):
         colors[y, x] = ('w', 'k')[(x + y) % 2]
 
+
+class Arrow3D(FancyArrowPatch):
+    """Class for rendering arrows on the 3D-graph."""
+
+    def __init__(self, x0, y0, z0, dx, dy, dz, *args, **kwargs):
+        super().__init__((0, 0), (0, 0), *args, **kwargs)
+        self._xyz = x0, y0, z0
+        self._dxdydz = dx, dy, dz
+
+    def do_3d_projection(self):
+        x1, y1, z1 = self._xyz
+        dx, dy, dz = self._dxdydz
+        x2, y2, z2 = x1 + dx, y1 + dy, z1 + dz
+
+        xs, ys, zs = proj3d.proj_transform((x1, x2), (y1, y2), (z1, z2), self.axes.M)
+        self.set_positions((xs[0], ys[0]), (xs[1], ys[1]))
+
+        return np.min(zs)
+
+
 for path in os.listdir(DATA_DIR):
     cap = cv2.VideoCapture(os.path.join(DATA_DIR, path))
     while True:
@@ -158,13 +179,16 @@ for path in os.listdir(DATA_DIR):
             # drawing the chessboard
             ax.plot_surface(X, Y, Z, facecolors=colors, zorder=0)
             # drawing the camera's path
-            ax.plot(cam_positions[0], cam_positions[1], cam_positions[2], color='deepskyblue', linewidth=2)
+            ax.plot(cam_positions[0], cam_positions[1], cam_positions[2], color='deepskyblue', linewidth=2, zorder=1)
             # drawing the current orientation of the camera
-            ax.plot((cam_x, cam_x + oz[0]), (cam_y, cam_y + oz[1]), (cam_z, cam_z + oz[2]), color='blue')
-            ax.plot((cam_x, cam_x + oy[0]), (cam_y, cam_y + oy[1]), (cam_z, cam_z + oy[2]), color='green')
-            ax.plot((cam_x, cam_x + ox[0]), (cam_y, cam_y + ox[1]), (cam_z, cam_z + ox[2]), color='red')
+            ax.add_artist(  # OZ-axis
+                Arrow3D(cam_x, cam_y, cam_z, oz[0], oz[1], oz[2], arrowstyle='-|>', mutation_scale=8, color='blue'))
+            ax.add_artist(  # OY-axis
+                Arrow3D(cam_x, cam_y, cam_z, oy[0], oy[1], oy[2], arrowstyle='-|>', mutation_scale=8, color='green'))
+            ax.add_artist(  # OX-axis
+                Arrow3D(cam_x, cam_y, cam_z, ox[0], ox[1], ox[2], arrowstyle='-|>', mutation_scale=8, color='red'))
             # drawing the current position of the camera
-            ax.scatter(cam_x, cam_y, cam_z, color='red', linewidths=2.5, zorder=3)
+            ax.scatter(cam_x, cam_y, cam_z, color='red', linewidths=2, zorder=3)
 
             # making the graph have the same scale for all axes
             ax.set_box_aspect([ub - lb for lb, ub in (getattr(ax, f'get_{a}lim')() for a in 'xyz')])
