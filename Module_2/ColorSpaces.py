@@ -2,7 +2,7 @@
 import cv2
 import numpy as np
 
-# 1 - remember about OpenCV's RGB is that it's BGR
+# 1 - BGR color-space
 image = cv2.imread('Module_1a/img/map.jpg')
 
 # BGR Values for the first 0,0 pixel
@@ -10,12 +10,12 @@ B, G, R = image[10, 50]
 print(B, G, R)
 print(image.shape)
 
-# 2 - what happens when we convert it to grayscale
+# 2 - Grayscale color-space
 gray_img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 print(gray_img.shape)
 print(gray_img[10, 50])
 
-# 3 - useful color space is HSV
+# 3 - HSV color-space
 
 #H: 0 - 180, S: 0 - 255, V: 0 - 255
 image = cv2.imread('Module_1a/img/map.jpg')
@@ -32,8 +32,42 @@ cv2.imshow('Value channel', hsv_image[:, :, 2])
 cv2.waitKey()
 cv2.destroyAllWindows()
 
+# 4 - LAB color-space
+# (L – Lightness, a – color component ranging from Green to Magenta,b – color component ranging from Blue to Yellow)
+image = cv2.imread('Module_1a/img/map.jpg')
+lab = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
+cv2.imshow("L*a*b*", lab)
 
-# 4 - individual channels in an RGB image
+for (name, chan) in zip(("L*", "a*", "b*"), cv2.split(lab)):
+	cv2.imshow(name, chan)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+# 5 - YCrCb color-space
+# Y – Luminance or Luma component obtained from RGB after gamma correction
+# Cr = R – Y ( how far is the red component from Luma )
+# Cb = B – Y ( how far is the blue component from Luma )
+
+image = cv2.imread('Module_1a/img/map.jpg')
+ycb = cv2.cvtColor(image, cv2.COLOR_BGR2YCrCb)
+cv2.imshow("YCrCb", ycb)
+
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+# 6 - YUV color-space
+# Y - luminance (brightness), U and V define the blue projection and red projection
+image = cv2.imread('Module_1a/img/map.jpg')
+yuv = cv2.cvtColor(image, cv2.cv2.COLOR_BGR2YUV)
+cv2.imshow("YUV", yuv)
+
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+# 7 - individual channels in an RGB image
 
 image = cv2.imread('image.jpg')
 
@@ -65,7 +99,7 @@ cv2.imshow("Merged with Blue Amplified", merged)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
-# 5
+# 8
 B, G, R = cv2.split(image)
 
 # create a matrix of zeros with dimensions of the image h x w

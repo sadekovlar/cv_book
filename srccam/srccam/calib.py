@@ -1,3 +1,5 @@
+from typing import Any
+
 import numpy as np
 
 
@@ -8,7 +10,7 @@ class Calib:
     K - интринсики, D - дисторсия, r - поворот, t - смещение.
     """
 
-    def __init__(self, calib_dict: dict):
+    def __init__(self, calib_dict: dict[str, Any]):
         self.cam_to_vr = np.array(
             [
                 [1, 0, 0],
@@ -16,11 +18,14 @@ class Calib:
                 [0, 1, 0],
             ]
         )
-        self.K = calib_dict["K"]
-        self.D = calib_dict["D"]
-        roll, pitch, yaw = calib_dict["r"]
-        self.r = self.rotation_matrix_from([roll, pitch, yaw]).T
-        self.t = calib_dict["t"]
+        try:
+            self.K = calib_dict["K"]
+            self.D = calib_dict["D"]
+            roll, pitch, yaw = calib_dict["r"]
+            self.r = self.rotation_matrix_from([roll, pitch, yaw]).T
+            self.t = calib_dict["t"]
+        except KeyError as exc:
+            raise CalibInitExceltion(f"Bad calib_dict, initialization failed, calid_dict: {calib_dict}") from exc
 
     @staticmethod
     def rotation_matrix_from(angles: list):
@@ -52,3 +57,7 @@ class Calib:
         )
 
         return Rz @ Ry @ Rx
+
+
+class CalibInitExceltion(Exception):
+    ...
