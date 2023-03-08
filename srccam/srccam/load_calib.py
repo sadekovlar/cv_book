@@ -1,14 +1,22 @@
+from typing import Any, Optional
+
 import cv2
 
 
 class CalibReader:
     _file_name: str = "leftImage.yaml"
 
-    def initialize(self, file_name: str = "", param=list()) -> bool:
+    def __init__(self, file_name: str = "", param: Optional[list[str]] = None):
+        if param is None:
+            param = []
         self._file_name = file_name
         self._param = param
 
-    def read(self) -> str:
+    @classmethod
+    def initialize(cls, *args, **kwargs):
+        cls(*args, **kwargs)
+
+    def read(self) -> dict[str, Any]:
         file_name = self._file_name
         list_param = self._param
         fs = cv2.FileStorage(file_name, cv2.FILE_STORAGE_READ)
