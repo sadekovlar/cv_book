@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 
 
-image = cv2.imread('../data/road.jpg')
+image = cv2.imread('./image.jpg')
 
 # structuring element or kernel
 kernel = np.ones((5,5),np.uint8)

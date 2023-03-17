@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 
-img = cv2.imread('../data/road.jpg')
+img = cv2.imread("C:/Users/22354/Downloads/picture.jpg")
 
 
 # Функция thresgold принимает только чб изображения

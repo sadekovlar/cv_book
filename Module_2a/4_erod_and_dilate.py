@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 
-img = cv2.imread('../data/road.jpg')
+img = cv2.imread("C:/Users/22354/Downloads/picture.jpg")
 
 # Измнение текстуры изображения 
 kernel = np.ones((5, 5), np.uint8)
