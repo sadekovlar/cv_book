@@ -1,7 +1,8 @@
 import numpy as np
 import cv2
 
-img = cv2.imread("C:/Users/22354/Downloads/picture.jpg")
+img = cv2.imread('../data/road.jpg')
+
 
 # Функция thresgold принимает только чб изображения
 gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
