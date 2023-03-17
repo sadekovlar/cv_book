@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 import time
-from cv_book.srccam.srccam.season_reader import SeasonReader
+from srccam.season_reader import SeasonReader
 
 
 class MovingObjects(SeasonReader):
@@ -87,7 +87,7 @@ class MovingObjects(SeasonReader):
 if __name__ == "__main__":
     for number in range(235, 236):
         init_args = {
-            'path_to_data_root': '../data/tram/'
+            'path_to_data_root': '../data/city/'
         }
         s = MovingObjects()
         s.initialize(**init_args)
