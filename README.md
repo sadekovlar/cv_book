@@ -36,11 +36,11 @@
 - Module 4b Feature tracking, image comparison
         - RANSAC
         - NN
-- Module 4c Area detector. Segmentattion mapping
-        - Graph base segmentation
 - Module 5 Hough Detector for camera calibration
         - Line Extract
         - Camera Pose estimation by line
+- Module 5c Area detector. Segmentattion mapping
+        - Graph base segmentation
 - Module 6 Optical flow
         - Dense and sparse optical flow
         - Video stabilization
