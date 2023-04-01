@@ -33,9 +33,11 @@
         - FAST
         - descriptor extract
         - HOG
-- Module 4b Feature tracking, image comparison
+- Module 4b Feature tracking, image comparison, Network detectors
         - RANSAC
         - NN
+        - SuperPoint
+        - SuperGlue
 - Module 5 Hough Detector for camera calibration
         - Line Extract
         - Camera Pose estimation by line
