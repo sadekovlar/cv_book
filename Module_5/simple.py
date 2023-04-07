@@ -100,5 +100,7 @@ def show_hough_line(img, accumulator, thetas, rhos):
 if __name__ == '__main__':
     image = np.zeros([60,80])
     frame = cv2.line(image, (20, 20), (50, 50), 255, 1)
+    frame = cv2.line(image, (20, 10), (70, 15), 255, 1)
+    frame = cv2.line(image, (10, 50), (70, 45), 255, 1)
     accumulator, thetas, rhos = hough_line(frame)
     show_hough_line(frame, accumulator, thetas, rhos)
