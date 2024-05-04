@@ -11,8 +11,7 @@ import matplotlib.pyplot as plt
 class VisualOdometry():
     def __init__(self, data_dir):
         par = ["K", "D", "r", "t"]
-        calib = CalibReader()
-        calib.initialize(file_name=f"{data_dir}/leftImage.yml",
+        calib = CalibReader(file_name=f"{data_dir}/leftImage.yml",
                           param=par)
         matrix = calib.read()
         #self.gps = PathCreator(matrix.get('K'))
@@ -24,7 +23,7 @@ class VisualOdometry():
 
         self.images = self._load_images(data_dir)
         self.gt_poses = self._load_poses(self, len_images=len(self.images))
-        self.orb = cv2.ORB_create(100000) 
+        self.orb = cv2.ORB_create(1000) 
         FLANN_INDEX_LSH = 6
         index_params = dict(algorithm=FLANN_INDEX_LSH, table_number=6, key_size=12, multi_probe_level=1)
         search_params = dict(checks=50)
@@ -72,6 +71,7 @@ class VisualOdometry():
         """
         video_name_list = os.listdir(filepath)
         video_name_list = [video for video in video_name_list if video.find(".avi") > 0]
+        video_name_list.sort()
         images = list()
         i = 0 # текущий кадр
         for name in video_name_list:
@@ -150,7 +150,7 @@ class VisualOdometry():
         img3 = cv2.resize(img3, (width, height))
 
         cv2.imshow("image", img3)
-        cv2.waitKey(100)
+        cv2.waitKey(10)
 
         # Получение списока точек соответствия первого и воторого изображения
         q1 = np.float32([kp1[m.queryIdx].pt for m in good])
@@ -255,7 +255,7 @@ def haversine(dists,angles):
     return Px,Py
 
 def main():
-    data_dir = '../data/city'
+    data_dir = '../../data/city'
     vo = VisualOdometry(data_dir)
 
     orb_x = []#массив позиций по x
@@ -274,13 +274,14 @@ def main():
     #gps_x,gps_y = haversine(vo.dists,vo.angles)
 
     #Выводим графики GPS и ORB
-    plt.figure(1)
+    #plt.figure(1)
     #plt.plot(np.array(gps_y),np.array(gps_x), label="GPS", color='g')
-    plt.legend()
+    #plt.legend()
     plt.figure(2)
     plt.plot(orb_x,orb_y, label="ORB", color='r')
     plt.legend()
     plt.show()
+    print()
 
 
 if __name__ == "__main__":

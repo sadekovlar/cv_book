@@ -44,7 +44,7 @@ class Reader(SeasonReader):
         par = ["K", "D", "r", "t"]
         calib_reader = CalibReader(file_name="../data/city/leftImage.yml", param=par)
         calib_dict = calib_reader.read()
-        self.way_estimator = WayEstimator(calib_dict, 10)
+        self.way_estimator = WayEstimator(calib_dict, 30)
 
         return True
 

@@ -60,8 +60,7 @@ class Reader(SeasonReader):
 
     def on_init(self, _file_name: str = None):
         par = ["K", "D", "r", "t"]
-        calib_reader = CalibReader()
-        calib_reader.initialize(file_name="../data/city/leftImage.yml", param=par)
+        calib_reader = CalibReader(file_name="../data/city/leftImage.yml", param=par)
         calib_dict = calib_reader.read()
         self.obj_estimator = ObjectOnWaysEstimator(calib_dict=calib_dict, height=1.6, width=1.6, length=10, depth=8)
         return True

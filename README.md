@@ -53,6 +53,7 @@
 - Module 8 Visual odometry
 - Module 9 Structure for motion
 - Module 10 Video and inertial data fusion
+- Module 11 Lidar data processing
 
 ## Data
 
