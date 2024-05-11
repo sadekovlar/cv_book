@@ -1,5 +1,6 @@
 ### Data files ###
 data/*
+Module_11/data/
 
 ### Test files ###
 Module_1/output.*
