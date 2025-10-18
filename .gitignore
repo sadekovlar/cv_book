@@ -8,6 +8,7 @@ trial.py
 
 ### VS Code ###
 *.code-workspace
+.vscode/
 
 ### JupyterNotebooks ###
 # gitignore template for Jupyter Notebooks
