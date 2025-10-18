@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import os
 
 # функция отрисовки сетки и извлечения
 # соответствующего оптического потока для каждой точки сетки 
@@ -66,11 +67,11 @@ def find_static_objects(flow, mag_threshold, ang_threshold):
     return static_mask
 
 
-cap = cv2.VideoCapture('../data/city/trm.169.008.avi')
+cap = cv2.VideoCapture(os.path.join('./data/city/trm.169.008.avi'))
 ret,im = cap.read()
 prev_gray = cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
 while True:
-    ret,im = cap.read()
+    ret, im = cap.read()
     gray = cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
     
     # Вычисление оптического потока с помощью алгоритма Фарнебака

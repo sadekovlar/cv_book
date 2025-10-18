@@ -31,7 +31,7 @@ def smooth(trajectory):
   return smoothed_trajectory
  
 # Read input video
-cap = cv2.VideoCapture('../data/optical_flow/nhd.002.001.left.avi')
+cap = cv2.VideoCapture('./data/optical_flow/nhd.002.001.left.avi')
  
 # Get frame count
 n_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) 
@@ -44,7 +44,7 @@ h = 480
 fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
  
 # Set up output video
-out = cv2.VideoWriter('../data/optical_flow/video_out.mp4', fourcc, 20.0, (w, h))
+out = cv2.VideoWriter('./data/optical_flow/video_out.mp4', fourcc, 20.0, (w, h))
 
 # Read first frame
 _, prev = cap.read() 

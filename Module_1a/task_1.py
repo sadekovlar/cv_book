@@ -2,6 +2,7 @@ from typing import Any, Optional
 
 import cv2
 import numpy as np
+import os
 
 from srccam.calib import Calib
 from srccam.camera import Camera
@@ -42,9 +43,9 @@ class Reader(SeasonReader):
 
     def on_init(self, _file_name: Optional[str] = None) -> bool:
         par = ["K", "D", "r", "t"]
-        calib_reader = CalibReader(file_name="../data/city/leftImage.yml", param=par)
+        calib_reader = CalibReader(file_name="./data/city/leftImage.yml", param=par)
         calib_dict = calib_reader.read()
-        self.way_estimator = WayEstimator(calib_dict, 30)
+        self.way_estimator = WayEstimator(calib_dict, 15)
 
         return True
 
@@ -75,7 +76,7 @@ class Reader(SeasonReader):
 
 
 if __name__ == "__main__":
-    init_args = {"path_to_data_root": "../data/city/"}
+    init_args = {"path_to_data_root": "./data/city/"}
     reader = Reader()
     reader.initialize(**init_args)
     reader.run()

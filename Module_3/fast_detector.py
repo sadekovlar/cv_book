@@ -2,7 +2,7 @@
 import cv2 as cv
 
 
-cap = cv.VideoCapture("../data/city/trm.169.007.avi")
+cap = cv.VideoCapture("./data/city/trm.169.008.avi")
 res = True
 while res:
     res, im = cap.read()

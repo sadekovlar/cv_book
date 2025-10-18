@@ -5,7 +5,7 @@ import numpy as np
 detector = cv2.ORB_create()
 
 # Загрузка исходного видео
-cap = cv2.VideoCapture('output.mp4')
+cap = cv2.VideoCapture('./data/city/trm.169.007.avi')
 
 # Получение первого кадра
 ret, prev_frame = cap.read()

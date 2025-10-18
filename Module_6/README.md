@@ -6,5 +6,5 @@
 - создать алгоритм измерения скорости движения объекта и сравнить его со скоростью с gps; 
 
 # Для работы с raft_model.py необходимо произвести установку библиотек 
-pip install torch = 2.0.0
-pip install torch = 0.15.1
+pip install torch==2.0.0
+pip install torchvision==0.15.1

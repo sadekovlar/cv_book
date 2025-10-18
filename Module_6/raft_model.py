@@ -1,4 +1,5 @@
 import os
+import cv2
 import torch
 import torchvision.transforms.functional as F
 from torchvision.io import read_video, write_video
@@ -6,8 +7,8 @@ from torchvision.models.optical_flow import Raft_Large_Weights, Raft_Small_Weigh
 from torchvision.utils import flow_to_image
 from torchvision.models.optical_flow import raft_large, raft_small
 
-file_name = 'nhd.002.001.left.avi'
-video_path = os.path.join('..','data', 'optical_flow', file_name)
+file_name = 'trm.169.007.avi'
+video_path = os.path.abspath(os.path.join('.','data/city', file_name))
 
 #weights = Raft_Large_Weights.DEFAULT
 weights = Raft_Small_Weights.DEFAULT
@@ -37,7 +38,9 @@ for i, (img1, img2) in enumerate(zip(frames, frames[1:])):
     flow_img = flow_to_image(predicted_flow).to("cpu")
     print(f"Done {i+1}/{size-1}")
     result.append(flow_img.permute(1, 2, 0))
+    if i == 2:
+        break
 
 res_tensor = torch.stack(result)
-write_video('RAFT video/RAFT.avi', res_tensor, 2)
+write_video('RAFT.avi', res_tensor, 2)
 print("done")

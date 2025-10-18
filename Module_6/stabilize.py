@@ -3,7 +3,7 @@ import numpy as np
 
 # Code assumes that the video lives in the following
 # folder and is titled video.wmv.
-folder_template = '../data/optical_flow/{0}'
+folder_template = './data/optical_flow/{0}'
 # Reset frequency determines how many frames the
 # stabilization will track before resetting to the
 # identity transform. May switch to using a maximum

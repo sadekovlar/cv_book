@@ -3,9 +3,8 @@ import cv2 as cv
 import matplotlib.pyplot as plt
 import os
 import time
-import seaborn as sns
 
-img_folder = '../data/'
+img_folder = './data/'
 
 # SIFT Timing
 sift = cv.xfeatures2d.SIFT_create(300)
@@ -51,11 +50,11 @@ plt.imshow(img2)
 plt.axis('off')
 
 fig = plt.figure()
-sns.set()
 ax = fig.add_axes([0,0,1,1])
 methods = ['SIFT',  'ORB']
 times = [sift_time*1000, orb_time*1000]
-ax.barh(methods,times,color=('green','orange'))
+ax.barh(methods[0],times[0],color='green')
+ax.barh(methods[1],times[1],color='orange')
 ax.set_ylabel('Feature Extractor')
 ax.set_xlabel('Time (ms)')
 ax.set_title('Average time to compute ~300 Key-Point Descriptors')
@@ -95,11 +94,12 @@ print("Average time for ORB features: ",orb_time2)
 print("Average number of ORB features: ",orb_features2)
 
 fig = plt.figure()
-sns.set()
+#sns.set()
 ax = fig.add_axes([0,0,1,1])
 methods = ['SIFT',  'ORB']
 times = [sift_features2,orb_features2]
-ax.barh(methods,times,color=('green','orange'))
+ax.barh(methods[0],times[0],color='green')
+ax.barh(methods[1],times[1],color='orange')
 ax.set_ylabel('Feature Extractor')
 ax.set_xlabel('Number of key-points')
 ax.set_title('Average total number of extracted key-points per image')
@@ -117,7 +117,7 @@ dist_list = []
 
 for imgname in files:
     img1 = cv.imread(os.path.join(img_folder, "road.png"))
-    img2 = cv.imread(os.path.join(img_folder, "road2.png"))
+    img2 = cv.imread(os.path.join(img_folder, "output.png"))
     kp1,des1 = sift.detectAndCompute(img1,None)
     kp2,des2 = sift.detectAndCompute(img2,None)
     matches = bf.match(des1,des2)
@@ -181,8 +181,8 @@ p_matched = []
 dist_list = []
 
 for imgname in files:
-    img1 = cv.imread(os.path.join(img_folder, "road.png"))
-    img2 = cv.imread(os.path.join(img_folder, "road2.png"))
+    img1 = cv.imread(os.path.join(img_folder, "output.png"))
+    img2 = cv.imread(os.path.join(img_folder, "road.png"))
     kp1,des1 = orb.detectAndCompute(img1,None)
     kp2,des2 = orb.detectAndCompute(img2,None)
     matches = bf.match(des1,des2)
@@ -236,22 +236,22 @@ print('Percentage of Matched Keypoints: ', orb_per_r)
 print('Drift of Matched Keypoints: ', orb_dist_r)
 
 fig = plt.figure()
-sns.set()
 ax = fig.add_axes([0,0,1,1])
 methods = ['SIFT',  'ORB']
 times = [sift_per_b,orb_per_b]
-ax.barh(methods,times,color=('green','orange'))
+ax.barh(methods[0],times[0],color='green')
+ax.barh(methods[1],times[1],color='orange')
 ax.set_ylabel('Feature Extractor')
 ax.set_xlabel('Percentage')
 ax.set_title('Average Percentage of Matched Keypoints for Brightened Image')
 plt.show()
 
 fig = plt.figure()
-sns.set()
 ax = fig.add_axes([0,0,1,1])
 methods = ['SIFT', 'ORB']
 times = [sift_per_r,orb_per_r]
-ax.barh(methods,times,color=('green','orange'))
+ax.barh(methods[0],times[0],color='green')
+ax.barh(methods[1],times[1],color='orange')
 ax.set_ylabel('Feature Extractor')
 ax.set_xlabel('Percentage')
 ax.set_title('Average Percentage of Matched Keypoints for Rotated Image')

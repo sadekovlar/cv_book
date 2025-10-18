@@ -1,8 +1,9 @@
 import cv2
 import numpy as np
+import os
 
 # Загрузка видео
-cap = cv2.VideoCapture('trm.169.008.avi')
+cap = cv2.VideoCapture(os.path.abspath('./data/city/trm.169.008.avi'))
 
 # Получение информации о видео
 fps = cap.get(cv2.CAP_PROP_FPS)

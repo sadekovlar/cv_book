@@ -84,7 +84,7 @@ objp[43] = (360, 216, 0)
 objpoints = []  # 3d point in real world space
 imgpoints = []  # 2d points in image plane.
 # /home/alex/Univercity/cv_book/V_20230530_171731.mp4
-cap = cv2.VideoCapture('../data/Data_folder/V_20230530_171731.mp4')
+cap = cv2.VideoCapture('./data/add_data/V_20230530_171731.mp4')
 found = 0
 while(found < 100):  # Here, 10 can be changed to whatever number you like to choose
     ret, img = cap.read() # Capture frame-by-frame

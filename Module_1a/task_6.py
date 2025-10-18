@@ -67,9 +67,10 @@ class Telemetry(SeasonReader):
                     DISPLAY_SPEC['font'], DISPLAY_SPEC['scale'], DISPLAY_SPEC['color'], DISPLAY_SPEC['thickness'])
         # Вывод координат
         nord_str, east_str = sd.get_geo_str()
+        print(sd._nord)
         cv2.putText(self.frame, f"Altitude: {sd._alt} m", (630, 520),
                     DISPLAY_SPEC['font'], DISPLAY_SPEC['scale'], DISPLAY_SPEC['color'], DISPLAY_SPEC['thickness'])
-        cv2.putText(self.frame, f"Nord: {nord_str}", (630, 480),
+        cv2.putText(self.frame, f"Nord: {sd._nord}", (630, 480),
                     DISPLAY_SPEC['font'], DISPLAY_SPEC['scale'], DISPLAY_SPEC['color'], DISPLAY_SPEC['thickness'])
         cv2.putText(self.frame, f"East: {east_str}", (630, 500),
                     DISPLAY_SPEC['font'], DISPLAY_SPEC['scale'], DISPLAY_SPEC['color'], DISPLAY_SPEC['thickness'])
@@ -125,7 +126,7 @@ class Telemetry(SeasonReader):
 
 if __name__ == "__main__":
     init_args = {
-        'path_to_data_root': '../data/city/'
+        'path_to_data_root': './data/city/'
     }
     s = Telemetry()
     s.initialize(**init_args)

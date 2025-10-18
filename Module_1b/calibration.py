@@ -16,7 +16,7 @@ objp = np.zeros((1, CHECKERBOARD[0] * CHECKERBOARD[1], 3), np.float32)
 objp[0, :, :2] = np.mgrid[0:CHECKERBOARD[0], 0:CHECKERBOARD[1]].T.reshape(-1, 2) * CHECKERBOARDSIZE 
 prev_img_shape = None
 # Extracting path of individual image stored in a given directory
-main_path = "../data/calib"
+main_path = "./data/calib"
 images = list()
 fs = os.listdir(main_path)
 count = 0
@@ -52,9 +52,9 @@ and corresponding pixel coordinates of the
 detected corners (imgpoints)
 """
 ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
-print("Camera matrix : \n")
+print("Camera matrix K: \n")
 print(mtx)
-print("dist : \n")
+print("dist D: \n")
 print(dist)
 print("rvecs : \n")
 print(rvecs)

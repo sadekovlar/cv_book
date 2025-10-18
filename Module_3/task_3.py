@@ -72,8 +72,8 @@ class Reader:
 if __name__ == '__main__':
     init_args = {
         'path_to_video': [
-            '../data/city/trm.169.007.avi',
-            '../data/tram/trm.169.008.avi'
+            './data/city/trm.169.007.avi',
+            './data/tram/trm.169.008.avi'
         ]
     }
     s = Reader()

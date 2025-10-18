@@ -66,3 +66,8 @@ def getMatrixHomography(pathImg1, pathImg2):
 	cv2.destroyAllWindows()
 
 	return M
+
+
+if __name__ == "__main__":
+	M = getMatrixHomography("./data/road.png", "./data/output.png")
+	print(M)

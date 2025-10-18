@@ -7,7 +7,7 @@ from matplotlib.patches import FancyArrowPatch
 import numpy as np
 
 # path to the data used for calibration
-DATA_DIR = '../data/calib'
+DATA_DIR = './data/calib'
 
 # checkerboard parameters
 BOARD_DIM = (7, 7)
@@ -199,17 +199,20 @@ for path in os.listdir(DATA_DIR):
             fig.canvas.draw()  # drawing the plot
             w, h = fig.canvas.get_width_height()  # getting dimensions of the plot
             # converting the graph image into a numpy array
-            plot_img = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8).reshape((h, w, 3))
+            print(len(fig.canvas.tostring_rgb()))
+            plot_img = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8).reshape((h, w, 3, 4))
 
             # overlaying the graph on the bottom left or the bottom right corners the frame
             if img_ps[BOARD_DIM[0] // 2][0, 0] < img.shape[1] // 2:
-                img[-plot_img.shape[0]:, -plot_img.shape[1]:, ::-1] = plot_img
+                img[-plot_img.shape[0]:, -plot_img.shape[1]:, ::-1] = plot_img[:,:,:,0]
             else:
-                img[-plot_img.shape[0]:, :plot_img.shape[1], ::-1] = plot_img
+                img[-plot_img.shape[0]:, :plot_img.shape[1], ::-1] = plot_img[:,:,:,0]
 
             ax.clear()  # clearing the graph
 
         cv2.imshow('camera motion', img)
-        cv2.waitKey(10)
+        key = cv2.waitKey(10)
+        if key == ord("q"):
+            cap.release()
 
     cap.release()

@@ -6,7 +6,8 @@ import numpy as np
 def detect(filepath, file):
 
 	font = cv2.FONT_HERSHEY_SIMPLEX
-	img = cv2.imread(filepath+file)
+	path = os.path.abspath(os.path.join(filepath,file))
+	img = cv2.imread(path)
 	cimg = img
 	img = cv2.medianBlur(img, 7)
 	hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -108,4 +109,4 @@ def detect(filepath, file):
 	cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-	detect('', '1.jpg')
+	detect('./data', 'tl.png')

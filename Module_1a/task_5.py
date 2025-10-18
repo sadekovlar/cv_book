@@ -18,8 +18,8 @@ class PathCreator:
     """Вычисление и отображение пути следования трамвая из данных GPS."""
 
     # пути к архивам с данными
-    DATA_PATHS = ['../data/city/trm.169.007.info.yml.gz',
-                  '../data/city/trm.169.008.info.yml.gz']
+    DATA_PATHS = ['./data/city/trm.169.007.info.yml.gz',
+                  './data/city/trm.169.008.info.yml.gz']
 
     GPS_TAG = 'emlidLeft'  # ключ для получения данных GPS
     POINT_CNT = 50         # количество точек для отрисовки
@@ -161,8 +161,7 @@ class PathPredictor(SeasonReader):
 
     def on_init(self) -> bool:
         par = ['K', 'D', 'r', 't']
-        calib_reader = CalibReader()
-        calib_reader.initialize(file_name='../data/city/leftImage.yml', param=par)
+        calib_reader = CalibReader(file_name="./data/city/leftImage.yml", param=par)
         calib_dict = calib_reader.read()
         calib = Calib(calib_dict)
         self.path_creator = PathCreator(calib)
@@ -185,7 +184,7 @@ class PathPredictor(SeasonReader):
 
 if __name__ == '__main__':
     predictor = PathPredictor()
-    predictor.initialize(path_to_data_root='../data/city/')
+    predictor.initialize(path_to_data_root='./data/city/')
     try:
         predictor.run()
     except FileNotFoundError as e:

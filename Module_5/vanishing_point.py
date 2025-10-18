@@ -6,6 +6,7 @@ from srccam.load_calib import CalibReader
 from srccam.calib import Calib
 from srccam.camera import Camera
 from srccam.point import Point3d
+import os
 
 # Threshold by which lines will be rejected wrt the horizontal
 REJECT_DEGREE_TH = 4.0
@@ -86,12 +87,9 @@ def GetVanishingPoint(Lines):
 
 
 if __name__ == "__main__":
-    cap = cv2.VideoCapture("../data/city/trm.169.007.avi")
+    cap = cv2.VideoCapture("./data/city/trm.169.007.avi")
     par = ['K', 'D', 'r', 't']
-    calib_reader = CalibReader()
-    calib_reader.initialize(
-        file_name='../data/city/leftImage.yml',
-        param=par)
+    calib_reader = CalibReader(file_name=os.path.abspath('./data/city/leftImage.yml'), param=par)
     calib_dict = calib_reader.read()
     calib = Calib(calib_dict)
     camera = Camera(calib)
