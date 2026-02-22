@@ -43,17 +43,6 @@
         - Camera Pose estimation by line
 - Module 5c Area detector. Segmentattion mapping
         - Graph base segmentation
-- Module 6 Optical flow
-        - Dense and sparse optical flow
-        - Video stabilization
-        - Moving object detect
-        - Slow Mo
-- Module 7 Stereovision. Disparity map, 3d point create
-- Module 7a Stereovision. Camera calibration
-- Module 8 Visual odometry
-- Module 9 Structure for motion
-- Module 10 Video and inertial data fusion
-- Module 11 Lidar data processing
 
 ## Data
 
