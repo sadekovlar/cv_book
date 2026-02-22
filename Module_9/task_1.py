@@ -13,13 +13,12 @@ LINE_WIDTH = 5
 
 class Reader(SeasonReader):
     """Обработка видеопотока."""
-    def on_init(self, _file_name: str = None):
+    def on_init(self):
         par = ['K', 'D', 'r', 't']
-        calib_reader = CalibReader()
-        calib_reader.initialize(
+        calib_reader = CalibReader(
             file_name='../data/tram/leftImage.yml',
             param=par)
-        calib_dict = calib_reader.read()
+        self.calib_dict = calib_reader.read()
         return True
 
     def on_shot(self):
