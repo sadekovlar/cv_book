@@ -1,0 +1,13 @@
+{
+  "calib": "../../data/city/leftImage.yml",
+  "video": "../../data/city/trm.169.007.avi",
+  "near_m": 5.0,
+  "far_m": 30.0,
+  "half_width_m": 4.0,
+  "rail_half_width_m": 0.76,
+  "pixels_per_meter": 60,
+  "bev_width_px": 480,
+  "layout": "side_by_side",
+  "delay_ms": 30,
+  "comment": "half_width_m — полуширина области BEV на земле. rail_half_width_m — линии колеи. bev_width_px — ширина правой панели."
+}

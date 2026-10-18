@@ -69,3 +69,13 @@ wget "https://cloclo.datacloudmail.ru/zip64/V7eVPRE2ArgWYvm1S3EPI4ckr8WGSwFKbAW0
 unzip data.zip
 rm -rf data.zip
 ```
+
+## Tests
+
+Минимальная проверка `srccam` (импорт, калиб, проекция точки):
+
+```bash
+make test
+```
+
+То же запускает GitHub Actions на push/PR (`.github/workflows/ci.yml`).
