@@ -351,3 +351,6 @@ cython_debug/
 # Support for Project snippet scope
 .vscode/*.code-snippets
 .vscode/settings.json
+
+# клон magicleap/SuperPointPretrainedNetwork
+Module_4b/SuperPointPretrainedNetwork/

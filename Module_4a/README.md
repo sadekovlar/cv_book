@@ -35,4 +35,25 @@
 
 
 - На основе анализа поведения ключевых точек между кадрами оценить является ли область плоской (при персональном обращении)
-    
+
+
+## Панорама
+
+`panorama.py` склеивает кадры из `data/panorama` в одно изображение. Углы ищутся детекторами Shi-Tomasi (`gftt`), Харриса (`harris`) или FAST (`orb`), дескриптор у всех — ORB. Соседние кадры сопоставляются, проецируются на цилиндр и смешиваются.
+
+Запуск из корня репозитория:
+
+```
+python Module_4a/panorama.py --detector gftt
+```
+
+Результат пишется рядом с исходными кадрами, в `data/panorama/out/<детектор>/`: панорама (`panorama.jpg`), та же панорама с цветными границами исходных кадров (`panorama_borders.jpg`), плоская развёртка цилиндра, на которой прямые линии комнаты снова прямые (`panorama_plane.jpg`, только для `--projection cylindrical`), ключевые точки (`kp_*.jpg`) и совпадения соседних кадров (`matches_*.jpg`).
+
+Другие детекторы и полный размер кадров:
+
+```
+python Module_4a/panorama.py --detector harris
+python Module_4a/panorama.py --detector orb
+python Module_4a/panorama.py --detector gftt --scale 1
+```
+ 
